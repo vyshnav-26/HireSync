@@ -33,7 +33,7 @@ export default function CreateJobPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <Link href={ROUTES.RECRUITER_JOBS}>

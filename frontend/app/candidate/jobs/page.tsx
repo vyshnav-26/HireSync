@@ -52,11 +52,12 @@ export default function JobsPage() {
           params.set('workType', debouncedFilters.workType);
         }
 
-        const response = await apiGet<PaginatedResponse<Job>>(
-          `/api/jobs?${params.toString()}`
+        const response = await apiGet<Job[]>(
+          `/api/job-seeker/jobs?${params.toString()}`
         );
-        setJobs(response.data);
-        setTotalPages(response.pagination.totalPages);
+        const fetchedJobs = Array.isArray(response) ? response : (response as any).data || [];
+        setJobs(fetchedJobs);
+        setTotalPages(1);
       } catch (error) {
         console.error('Failed to fetch jobs:', error);
       } finally {
@@ -72,9 +73,10 @@ export default function JobsPage() {
     const fetchApplications = async () => {
       try {
         const response = await apiGet<Application[]>(
-          '/api/candidate/applications?limit=100'
+          '/api/job-seeker/applications'
         );
-        const appliedJobIds = response.map((app: Application) => app.jobId);
+        const apps = Array.isArray(response) ? response : (response as any).data || [];
+        const appliedJobIds = apps.map((app: Application) => app.jobPosting?.id || app.jobId);
         setApplications(appliedJobIds);
       } catch (error) {
         console.error('Failed to fetch applications:', error);
@@ -95,9 +97,13 @@ export default function JobsPage() {
     if (!applyDialog.jobId) return;
 
     try {
-      await apiPost('/api/candidate/applications', {
-        jobId: applyDialog.jobId,
-        coverLetter,
+      await fetch(`/api/job-seeker/jobs/${applyDialog.jobId}/apply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: coverLetter || 'No cover letter provided.'
       });
 
       setApplications([...applications, applyDialog.jobId]);
@@ -112,12 +118,12 @@ export default function JobsPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['candidate']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#111827]">Browse Jobs</h1>
-            <p className="mt-2 text-[#6B7280]">
+            <h1 className="text-3xl font-bold text-foreground">Browse Jobs</h1>
+            <p className="mt-2 text-muted-foreground">
               Find your next opportunity
             </p>
           </div>
@@ -158,7 +164,7 @@ export default function JobsPage() {
             <Card>
               <CardContent className="py-12">
                 <div className="text-center">
-                  <p className="text-[#6B7280]">No jobs found matching your filters</p>
+                  <p className="text-muted-foreground">No jobs found matching your filters</p>
                 </div>
               </CardContent>
             </Card>

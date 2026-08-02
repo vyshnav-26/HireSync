@@ -55,7 +55,7 @@ export function ApplicationReview({
         <CardContent>
           <div className="space-y-3">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-[#111827]">Current Status</span>
+              <span className="text-sm font-medium text-foreground">Current Status</span>
               <Badge variant={
                 application.status === 'hired' ? 'success' :
                 application.status === 'rejected' ? 'danger' :
@@ -111,7 +111,7 @@ export function ApplicationReview({
         <CardContent>
           <form onSubmit={handleSaveFeedback} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#111827]">
+              <label className="text-sm font-medium text-foreground">
                 Rating
               </label>
               <StarRating
@@ -122,7 +122,7 @@ export function ApplicationReview({
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="feedback" className="text-sm font-medium text-[#111827]">
+              <label htmlFor="feedback" className="text-sm font-medium text-foreground">
                 Feedback
               </label>
               <Textarea

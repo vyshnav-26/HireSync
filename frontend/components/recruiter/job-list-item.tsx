@@ -25,7 +25,7 @@ export function JobListItem({ job, onEdit, onDelete }: JobListItemProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Link href={`/recruiter/jobs/${job.id}`}>
-                <h3 className="text-lg font-semibold text-[#111827] hover:text-[#4F46E5] cursor-pointer">
+                <h3 className="text-lg font-semibold text-foreground hover:text-[#4F46E5] cursor-pointer">
                   {job.title}
                 </h3>
               </Link>
@@ -33,7 +33,7 @@ export function JobListItem({ job, onEdit, onDelete }: JobListItemProps) {
                 {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
               </Badge>
             </div>
-            <p className="text-sm text-[#6B7280]">{job.company}</p>
+            <p className="text-sm text-muted-foreground">{job.company}</p>
           </div>
 
           <div className="flex gap-2">
@@ -60,17 +60,17 @@ export function JobListItem({ job, onEdit, onDelete }: JobListItemProps) {
         </div>
 
         <div className="flex flex-wrap gap-4 mb-4">
-          <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4" />
             {job.location}
           </div>
-          <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
             {job.applicantCount || 0} applications
           </div>
         </div>
 
-        <p className="text-sm text-[#6B7280] line-clamp-2 mb-4">
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
           {job.description}
         </p>
 

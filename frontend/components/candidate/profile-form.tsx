@@ -18,11 +18,14 @@ interface ProfileFormProps {
 
 export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileFormProps) {
   const [formData, setFormData] = useState({
+    name: candidate.name || '',
     headline: candidate.headline || '',
     bio: candidate.bio || '',
     location: candidate.location || '',
     skills: candidate.skills || [],
     experience: candidate.experience || '',
+    email: candidate.email || '',
+    resume: candidate.resume || '',
   });
 
   const [newSkill, setNewSkill] = useState('');
@@ -79,9 +82,23 @@ export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileF
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
 
+          {/* Name */}
+          <div className="space-y-2">
+            <label htmlFor="name" className="text-sm font-medium text-foreground">
+              Full Name
+            </label>
+            <Input
+              id="name"
+              placeholder="e.g., Jane Doe"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+
           {/* Headline */}
           <div className="space-y-2">
-            <label htmlFor="headline" className="text-sm font-medium text-[#111827]">
+            <label htmlFor="headline" className="text-sm font-medium text-foreground">
               Headline
             </label>
             <Input
@@ -91,12 +108,12 @@ export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileF
               onChange={(e) => handleInputChange('headline', e.target.value)}
               disabled={isLoading}
             />
-            <p className="text-xs text-[#6B7280]">A brief summary of your current role</p>
+            <p className="text-xs text-muted-foreground">A brief summary of your current role</p>
           </div>
 
           {/* Bio */}
           <div className="space-y-2">
-            <label htmlFor="bio" className="text-sm font-medium text-[#111827]">
+            <label htmlFor="bio" className="text-sm font-medium text-foreground">
               About You
             </label>
             <Textarea
@@ -111,7 +128,7 @@ export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileF
 
           {/* Skills */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[#111827]">Skills</label>
+            <label className="text-sm font-medium text-foreground">Skills</label>
             <div className="flex gap-2">
               <Input
                 placeholder="Add a skill (e.g., React)"
@@ -143,7 +160,7 @@ export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileF
                     <button
                       type="button"
                       onClick={() => handleRemoveSkill(skill)}
-                      className="ml-1 rounded p-0.5 hover:bg-white"
+                      className="ml-1 rounded p-0.5 hover:bg-card"
                       disabled={isLoading}
                     >
                       <X className="h-3 w-3" />
@@ -156,7 +173,7 @@ export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileF
 
           {/* Location */}
           <div className="space-y-2">
-            <label htmlFor="location" className="text-sm font-medium text-[#111827]">
+            <label htmlFor="location" className="text-sm font-medium text-foreground">
               Location
             </label>
             <Input
@@ -170,7 +187,7 @@ export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileF
 
           {/* Experience */}
           <div className="space-y-2">
-            <label htmlFor="experience" className="text-sm font-medium text-[#111827]">
+            <label htmlFor="experience" className="text-sm font-medium text-foreground">
               Years of Experience
             </label>
             <Input
@@ -180,6 +197,82 @@ export function ProfileForm({ candidate, onSubmit, isLoading = false }: ProfileF
               onChange={(e) => handleInputChange('experience', e.target.value)}
               disabled={isLoading}
             />
+          </div>
+
+          {/* Email */}
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-sm font-medium text-foreground">
+              Email Address
+            </label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="e.g., jane@example.com"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+
+          {/* Resume */}
+          <div className="space-y-4">
+            <label className="text-sm font-medium text-foreground">
+              Resume
+            </label>
+            
+            <div className="space-y-2">
+              <label htmlFor="resume-file" className="text-xs text-muted-foreground">Upload Document (PDF, DOCX)</label>
+              <Input
+                id="resume-file"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  
+                  const formData = new FormData();
+                  formData.append('file', file);
+                  
+                  try {
+                    const res = await fetch('/api/job-seeker/resume', {
+                      method: 'POST',
+                      headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                      },
+                      body: formData
+                    });
+                    
+                    if (res.ok) {
+                      const uri = await res.text();
+                      handleInputChange('resume', uri);
+                    } else {
+                      setError('Failed to upload resume');
+                    }
+                  } catch (err) {
+                    setError('Error uploading resume');
+                  }
+                }}
+                disabled={isLoading}
+              />
+            </div>
+            
+            <div className="relative flex items-center py-2">
+              <div className="flex-grow border-t border-muted"></div>
+              <span className="mx-4 text-xs text-muted-foreground">OR Provide URL</span>
+              <div className="flex-grow border-t border-muted"></div>
+            </div>
+
+            <div className="space-y-2">
+              <Input
+                id="resume-url"
+                type="url"
+                placeholder="e.g., https://drive.google.com/..."
+                value={formData.resume}
+                onChange={(e) => handleInputChange('resume', e.target.value)}
+                disabled={isLoading}
+              />
+              <p className="text-xs text-muted-foreground">Link to your resume document (auto-filled if uploaded above)</p>
+            </div>
           </div>
 
           <Button type="submit" disabled={isLoading}>

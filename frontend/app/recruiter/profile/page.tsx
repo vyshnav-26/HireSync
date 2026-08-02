@@ -24,6 +24,7 @@ export default function RecruiterProfilePage() {
 
   const [formData, setFormData] = useState({
     name: '',
+    email: '',
     position: '',
   });
 
@@ -34,6 +35,7 @@ export default function RecruiterProfilePage() {
         setRecruiter(response);
         setFormData({
           name: response.name,
+          email: response.email,
           position: response.position || '',
         });
       } catch (error) {
@@ -54,6 +56,7 @@ export default function RecruiterProfilePage() {
     try {
       const response = await apiPatch<Recruiter>('/api/recruiter/profile', {
         name: formData.name,
+        email: formData.email,
         position: formData.position,
       });
       setRecruiter(response);
@@ -69,7 +72,7 @@ export default function RecruiterProfilePage() {
   if (isLoading) {
     return (
       <ProtectedRoute allowedUserTypes={['recruiter']}>
-        <div className="min-h-screen bg-[#F9FAFB] py-8">
+        <div className="min-h-screen bg-background py-8">
           <LoadingSpinner />
         </div>
       </ProtectedRoute>
@@ -78,7 +81,7 @@ export default function RecruiterProfilePage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           {/* Profile Overview */}
           <Card className="mb-8">
@@ -89,7 +92,7 @@ export default function RecruiterProfilePage() {
               <div className="space-y-6">
                 {/* Name */}
                 <div>
-                  <h2 className="text-3xl font-bold text-[#111827]">{recruiter?.name}</h2>
+                  <h2 className="text-3xl font-bold text-foreground">{recruiter?.name}</h2>
                   {recruiter?.position && (
                     <p className="text-lg text-[#4F46E5] mt-1">{recruiter.position}</p>
                   )}
@@ -100,16 +103,16 @@ export default function RecruiterProfilePage() {
                   <div className="flex items-start gap-3">
                     <Building2 className="h-5 w-5 text-[#4F46E5] mt-0.5" />
                     <div>
-                      <p className="text-xs text-[#6B7280] uppercase">Company</p>
-                      <p className="text-sm text-[#111827]">{recruiter?.company}</p>
+                      <p className="text-xs text-muted-foreground uppercase">Company</p>
+                      <p className="text-sm text-foreground">{recruiter?.company}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
                     <Mail className="h-5 w-5 text-[#4F46E5] mt-0.5" />
                     <div>
-                      <p className="text-xs text-[#6B7280] uppercase">Email</p>
-                      <p className="text-sm text-[#111827]">{recruiter?.email}</p>
+                      <p className="text-xs text-muted-foreground uppercase">Email</p>
+                      <p className="text-sm text-foreground">{recruiter?.email}</p>
                     </div>
                   </div>
                 </div>
@@ -135,7 +138,7 @@ export default function RecruiterProfilePage() {
                   {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
 
                   <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium text-[#111827]">
+                    <label htmlFor="name" className="text-sm font-medium text-foreground">
                       Full Name
                     </label>
                     <Input
@@ -150,7 +153,23 @@ export default function RecruiterProfilePage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="position" className="text-sm font-medium text-[#111827]">
+                    <label htmlFor="email" className="text-sm font-medium text-foreground">
+                      Email Address
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))}
+                      disabled={isSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="position" className="text-sm font-medium text-foreground">
                       Position
                     </label>
                     <Input

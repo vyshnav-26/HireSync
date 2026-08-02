@@ -29,27 +29,24 @@ export default function RecruiterDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Fetch jobs
-        const jobsResponse = await apiGet<PaginatedResponse<Job>>(
-          '/api/recruiter/jobs?page=1&limit=5'
-        );
-        setJobs(jobsResponse.data);
+        // Fetch jobs (backend returns array directly)
+        const jobsResponse = await apiGet<Job[]>('/api/recruiter/jobs');
+        const fetchedJobs = Array.isArray(jobsResponse) ? jobsResponse : (jobsResponse as any).data || [];
+        setJobs(fetchedJobs);
 
-        // Fetch applications
-        const applicationsResponse = await apiGet<PaginatedResponse<Application>>(
-          '/api/recruiter/applications?page=1&limit=100'
-        );
-        const applications = applicationsResponse.data;
+        // Fetch applications (backend returns array directly)
+        const appsResponse = await apiGet<Application[]>('/api/recruiter/applications');
+        const applications = Array.isArray(appsResponse) ? appsResponse : (appsResponse as any).data || [];
         setTotalApplications(applications.length);
 
         // Calculate stats
-        const stats = {
-          openJobs: jobsResponse.data.filter(j => j.status === 'open').length,
+        const calculatedStats = {
+          openJobs: fetchedJobs.filter((j: Job) => j.status === 'open').length,
           totalApplications: applications.length,
-          shortlisted: applications.filter(a => a.status === 'shortlisted').length,
-          hired: applications.filter(a => a.status === 'hired').length,
+          shortlisted: applications.filter((a: Application) => a.status === 'shortlisted').length,
+          hired: applications.filter((a: Application) => a.status === 'hired').length,
         };
-        setStats(stats);
+        setStats(calculatedStats);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -62,14 +59,14 @@ export default function RecruiterDashboard() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#111827]">
+            <h1 className="text-3xl font-bold text-foreground">
               Welcome, {user?.name}!
             </h1>
-            <p className="mt-2 text-[#6B7280]">
+            <p className="mt-2 text-muted-foreground">
               Manage your job postings and review applications
             </p>
           </div>
@@ -82,7 +79,7 @@ export default function RecruiterDashboard() {
                   <div className="text-3xl font-bold text-[#4F46E5]">
                     {stats.openJobs}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Open Jobs</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Open Jobs</p>
                 </div>
               </CardContent>
             </Card>
@@ -93,7 +90,7 @@ export default function RecruiterDashboard() {
                   <div className="text-3xl font-bold text-[#3B82F6]">
                     {stats.totalApplications}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Applications</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Applications</p>
                 </div>
               </CardContent>
             </Card>
@@ -104,7 +101,7 @@ export default function RecruiterDashboard() {
                   <div className="text-3xl font-bold text-[#F59E0B]">
                     {stats.shortlisted}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Shortlisted</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Shortlisted</p>
                 </div>
               </CardContent>
             </Card>
@@ -115,7 +112,7 @@ export default function RecruiterDashboard() {
                   <div className="text-3xl font-bold text-[#10B981]">
                     {stats.hired}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Hired</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Hired</p>
                 </div>
               </CardContent>
             </Card>
@@ -127,8 +124,8 @@ export default function RecruiterDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="flex items-center justify-between p-6">
                   <div>
-                    <p className="font-medium text-[#111827]">Create Job</p>
-                    <p className="text-sm text-[#6B7280]">Post new job</p>
+                    <p className="font-medium text-foreground">Create Job</p>
+                    <p className="text-sm text-muted-foreground">Post new job</p>
                   </div>
                   <ArrowRight className="h-5 w-5 text-[#4F46E5]" />
                 </CardContent>
@@ -139,8 +136,8 @@ export default function RecruiterDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="flex items-center justify-between p-6">
                   <div>
-                    <p className="font-medium text-[#111827]">My Jobs</p>
-                    <p className="text-sm text-[#6B7280]">Manage postings</p>
+                    <p className="font-medium text-foreground">My Jobs</p>
+                    <p className="text-sm text-muted-foreground">Manage postings</p>
                   </div>
                   <ArrowRight className="h-5 w-5 text-[#4F46E5]" />
                 </CardContent>
@@ -151,8 +148,8 @@ export default function RecruiterDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="flex items-center justify-between p-6">
                   <div>
-                    <p className="font-medium text-[#111827]">Browse Candidates</p>
-                    <p className="text-sm text-[#6B7280]">Find talent</p>
+                    <p className="font-medium text-foreground">Browse Candidates</p>
+                    <p className="text-sm text-muted-foreground">Find talent</p>
                   </div>
                   <ArrowRight className="h-5 w-5 text-[#4F46E5]" />
                 </CardContent>
@@ -183,7 +180,7 @@ export default function RecruiterDashboard() {
               ) : (
                 <div className="text-center py-8">
                   <Briefcase className="mx-auto h-12 w-12 text-[#E5E7EB] mb-2" />
-                  <p className="text-[#6B7280]">No jobs posted yet</p>
+                  <p className="text-muted-foreground">No jobs posted yet</p>
                   <Link href={`${ROUTES.RECRUITER_JOBS}/new`}>
                     <Button className="mt-4">Create First Job</Button>
                   </Link>

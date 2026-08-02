@@ -35,11 +35,12 @@ export default function CandidatesPage() {
           params.set('search', debouncedSearch);
         }
 
-        const response = await apiGet<PaginatedResponse<CandidateListItem>>(
+        const response = await apiGet<CandidateListItem[]>(
           `/api/recruiter/candidates?${params.toString()}`
         );
-        setCandidates(response.data);
-        setTotalPages(response.pagination.totalPages);
+        const fetchedCandidates = Array.isArray(response) ? response : (response as any).data || [];
+        setCandidates(fetchedCandidates);
+        setTotalPages(1);
       } catch (error) {
         console.error('Failed to fetch candidates:', error);
       } finally {
@@ -52,12 +53,12 @@ export default function CandidatesPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#111827]">Browse Candidates</h1>
-            <p className="mt-2 text-[#6B7280]">
+            <h1 className="text-3xl font-bold text-foreground">Browse Candidates</h1>
+            <p className="mt-2 text-muted-foreground">
               Find and review talented candidates
             </p>
           </div>
@@ -103,7 +104,7 @@ export default function CandidatesPage() {
             <Card>
               <CardContent className="py-12">
                 <div className="text-center">
-                  <p className="text-[#6B7280]">No candidates found</p>
+                  <p className="text-muted-foreground">No candidates found</p>
                 </div>
               </CardContent>
             </Card>

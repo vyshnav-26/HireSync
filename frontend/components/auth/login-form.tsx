@@ -51,7 +51,7 @@ export function LoginForm() {
       )}
 
       <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium text-[#111827]">
+        <label htmlFor="email" className="text-sm font-medium text-foreground">
           Email
         </label>
         <Input
@@ -65,7 +65,7 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="password" className="text-sm font-medium text-[#111827]">
+        <label htmlFor="password" className="text-sm font-medium text-foreground">
           Password
         </label>
         <Input

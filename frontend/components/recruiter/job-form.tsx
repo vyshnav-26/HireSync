@@ -4,7 +4,13 @@ import { FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select } from '@/components/ui/select';
+import { 
+  Select, 
+  SelectTrigger, 
+  SelectValue, 
+  SelectContent, 
+  SelectItem 
+} from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ErrorMessage } from '@/components/common/error-message';
 import { Badge } from '@/components/ui/badge';
@@ -105,7 +111,7 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
 
           {/* Title */}
           <div className="space-y-2">
-            <label htmlFor="title" className="text-sm font-medium text-[#111827]">
+            <label htmlFor="title" className="text-sm font-medium text-foreground">
               Job Title
             </label>
             <Input
@@ -119,7 +125,7 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
 
           {/* Description */}
           <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium text-[#111827]">
+            <label htmlFor="description" className="text-sm font-medium text-foreground">
               Job Description
             </label>
             <Textarea
@@ -135,7 +141,7 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
           {/* Location and Work Type */}
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label htmlFor="location" className="text-sm font-medium text-[#111827]">
+              <label htmlFor="location" className="text-sm font-medium text-foreground">
                 Location
               </label>
               <Input
@@ -148,27 +154,30 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="workType" className="text-sm font-medium text-[#111827]">
+              <label htmlFor="workType" className="text-sm font-medium text-foreground">
                 Work Type
               </label>
               <Select
-                id="workType"
                 value={formData.workType}
-                onChange={(e) => handleInputChange('workType', e.target.value)}
-                options={[
-                  { value: 'remote', label: 'Remote' },
-                  { value: 'on-site', label: 'On-site' },
-                  { value: 'hybrid', label: 'Hybrid' },
-                ]}
+                onValueChange={(val) => handleInputChange('workType', val)}
                 disabled={isLoading}
-              />
+              >
+                <SelectTrigger id="workType" className="w-full">
+                  <SelectValue placeholder="Select work type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="remote">Remote</SelectItem>
+                  <SelectItem value="on-site">On-site</SelectItem>
+                  <SelectItem value="hybrid">Hybrid</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           {/* Salary */}
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label htmlFor="salaryMin" className="text-sm font-medium text-[#111827]">
+              <label htmlFor="salaryMin" className="text-sm font-medium text-foreground">
                 Minimum Salary ($)
               </label>
               <Input
@@ -187,7 +196,7 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="salaryMax" className="text-sm font-medium text-[#111827]">
+              <label htmlFor="salaryMax" className="text-sm font-medium text-foreground">
                 Maximum Salary ($)
               </label>
               <Input
@@ -208,7 +217,7 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
 
           {/* Requirements */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[#111827]">
+            <label className="text-sm font-medium text-foreground">
               Requirements
             </label>
             <div className="flex gap-2">
@@ -242,7 +251,7 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
                     <button
                       type="button"
                       onClick={() => handleRemoveRequirement(req)}
-                      className="ml-1 rounded p-0.5 hover:bg-white"
+                      className="ml-1 rounded p-0.5 hover:bg-background"
                       disabled={isLoading}
                     >
                       <X className="h-3 w-3" />
@@ -255,20 +264,23 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
 
           {/* Status */}
           <div className="space-y-2">
-            <label htmlFor="status" className="text-sm font-medium text-[#111827]">
+            <label htmlFor="status" className="text-sm font-medium text-foreground">
               Status
             </label>
             <Select
-              id="status"
               value={formData.status}
-              onChange={(e) => handleInputChange('status', e.target.value)}
-              options={[
-                { value: 'draft', label: 'Draft' },
-                { value: 'open', label: 'Open' },
-                { value: 'closed', label: 'Closed' },
-              ]}
+              onValueChange={(val) => handleInputChange('status', val)}
               disabled={isLoading}
-            />
+            >
+              <SelectTrigger id="status" className="w-full">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="closed">Closed</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <Button type="submit" disabled={isLoading}>

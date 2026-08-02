@@ -5,7 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
+import { 
+  Select, 
+  SelectTrigger, 
+  SelectValue, 
+  SelectContent, 
+  SelectItem 
+} from '@/components/ui/select';
 import { ErrorMessage } from '@/components/common/error-message';
 import { validateRegisterForm } from '@/lib/validation';
 import { ROUTES } from '@/lib/constants';
@@ -70,7 +76,7 @@ export function RegisterForm() {
       )}
 
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium text-[#111827]">
+        <label htmlFor="name" className="text-sm font-medium text-foreground">
           Full Name
         </label>
         <Input
@@ -84,7 +90,7 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium text-[#111827]">
+        <label htmlFor="email" className="text-sm font-medium text-foreground">
           Email
         </label>
         <Input
@@ -98,7 +104,7 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="password" className="text-sm font-medium text-[#111827]">
+        <label htmlFor="password" className="text-sm font-medium text-foreground">
           Password
         </label>
         <Input
@@ -112,24 +118,27 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="userType" className="text-sm font-medium text-[#111827]">
+        <label htmlFor="userType" className="text-sm font-medium text-foreground">
           I&apos;m a...
         </label>
         <Select
-          id="userType"
           value={userType}
-          onChange={(e) => setUserType(e.target.value as 'candidate' | 'recruiter')}
-          options={[
-            { value: 'candidate', label: 'Job Seeker (Candidate)' },
-            { value: 'recruiter', label: 'Recruiter' },
-          ]}
+          onValueChange={(val: 'candidate' | 'recruiter') => setUserType(val)}
           disabled={isLoading}
-        />
+        >
+          <SelectTrigger id="userType" className="w-full">
+            <SelectValue placeholder="Select user type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="candidate">Job Seeker (Candidate)</SelectItem>
+            <SelectItem value="recruiter">Recruiter</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {userType === 'recruiter' && (
         <div className="space-y-2">
-          <label htmlFor="company" className="text-sm font-medium text-[#111827]">
+          <label htmlFor="company" className="text-sm font-medium text-foreground">
             Company Name
           </label>
           <Input

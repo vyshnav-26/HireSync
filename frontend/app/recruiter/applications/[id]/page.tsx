@@ -82,7 +82,7 @@ export default function ApplicationReviewPage() {
   if (isLoading) {
     return (
       <ProtectedRoute allowedUserTypes={['recruiter']}>
-        <div className="min-h-screen bg-[#F9FAFB] py-8">
+        <div className="min-h-screen bg-background py-8">
           <LoadingSpinner />
         </div>
       </ProtectedRoute>
@@ -92,11 +92,11 @@ export default function ApplicationReviewPage() {
   if (!application) {
     return (
       <ProtectedRoute allowedUserTypes={['recruiter']}>
-        <div className="min-h-screen bg-[#F9FAFB] py-8">
+        <div className="min-h-screen bg-background py-8">
           <div className="mx-auto max-w-3xl px-4">
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-[#6B7280]">Application not found</p>
+                <p className="text-muted-foreground">Application not found</p>
               </CardContent>
             </Card>
           </div>
@@ -107,7 +107,7 @@ export default function ApplicationReviewPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <Link href={`${ROUTES.RECRUITER_JOBS}/${application.job.id}`}>
@@ -131,8 +131,8 @@ export default function ApplicationReviewPage() {
                       {application.job.title}
                     </p>
                   </Link>
-                  <p className="text-sm text-[#6B7280] mt-1">{application.job.company}</p>
-                  <p className="text-xs text-[#6B7280] mt-3">
+                  <p className="text-sm text-muted-foreground mt-1">{application.job.company}</p>
+                  <p className="text-xs text-muted-foreground mt-3">
                     Applied on {new Date(application.appliedDate).toLocaleDateString()}
                   </p>
                 </CardContent>
@@ -146,7 +146,7 @@ export default function ApplicationReviewPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h3 className="text-xl font-semibold text-[#111827]">
+                    <h3 className="text-xl font-semibold text-foreground">
                       {application.candidate.name}
                     </h3>
                     {application.candidate.headline && (
@@ -156,9 +156,9 @@ export default function ApplicationReviewPage() {
                     )}
                   </div>
 
-                  <div className="space-y-2 pt-4 border-t border-[#E5E7EB]">
+                  <div className="space-y-2 pt-4 border-t border-border">
                     <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-[#6B7280]" />
+                      <Mail className="h-4 w-4 text-muted-foreground" />
                       <a href={`mailto:${application.candidate.email}`} className="text-[#4F46E5] hover:underline">
                         {application.candidate.email}
                       </a>
@@ -166,29 +166,29 @@ export default function ApplicationReviewPage() {
 
                     {application.candidate.location && (
                       <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-[#6B7280]" />
-                        <span className="text-[#6B7280]">{application.candidate.location}</span>
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{application.candidate.location}</span>
                       </div>
                     )}
 
                     {application.candidate.experience && (
                       <div className="flex items-center gap-2">
-                        <Briefcase className="h-4 w-4 text-[#6B7280]" />
-                        <span className="text-[#6B7280]">{application.candidate.experience}</span>
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{application.candidate.experience}</span>
                       </div>
                     )}
                   </div>
 
                   {application.candidate.bio && (
-                    <div className="pt-4 border-t border-[#E5E7EB]">
-                      <p className="text-xs text-[#6B7280] uppercase font-medium mb-2">About</p>
-                      <p className="text-[#6B7280]">{application.candidate.bio}</p>
+                    <div className="pt-4 border-t border-border">
+                      <p className="text-xs text-muted-foreground uppercase font-medium mb-2">About</p>
+                      <p className="text-muted-foreground">{application.candidate.bio}</p>
                     </div>
                   )}
 
                   {application.candidate.skills?.length > 0 && (
-                    <div className="pt-4 border-t border-[#E5E7EB]">
-                      <p className="text-xs text-[#6B7280] uppercase font-medium mb-3">Skills</p>
+                    <div className="pt-4 border-t border-border">
+                      <p className="text-xs text-muted-foreground uppercase font-medium mb-3">Skills</p>
                       <div className="flex flex-wrap gap-2">
                         {application.candidate.skills.map((skill) => (
                           <Badge key={skill} variant="secondary">
@@ -207,7 +207,7 @@ export default function ApplicationReviewPage() {
                   <CardTitle className="text-base">Cover Letter</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-[#6B7280] whitespace-pre-wrap">
+                  <p className="text-muted-foreground whitespace-pre-wrap">
                     {application.coverLetter}
                   </p>
                 </CardContent>

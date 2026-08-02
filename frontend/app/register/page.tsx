@@ -5,7 +5,7 @@ import { ROUTES } from '@/lib/constants';
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
@@ -16,7 +16,7 @@ export default function RegisterPage() {
             <RegisterForm />
 
             <div className="mt-6 text-center text-sm">
-              <p className="text-[#6B7280]">
+              <p className="text-muted-foreground">
                 Already have an account?{' '}
                 <Link href={ROUTES.LOGIN} className="font-medium text-[#4F46E5] hover:text-[#4338CA]">
                   Sign in here

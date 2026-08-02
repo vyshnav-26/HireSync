@@ -20,10 +20,10 @@ export function ApplicationCard({ application, job }: ApplicationCardProps) {
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-[#111827]">
+            <h3 className="text-lg font-semibold text-foreground">
               {job.title}
             </h3>
-            <p className="text-sm text-[#6B7280]">{job.company}</p>
+            <p className="text-sm text-muted-foreground">{job.company}</p>
           </div>
           <Badge 
             variant={application.status === 'hired' ? 'success' : application.status === 'rejected' ? 'danger' : 'info'}
@@ -33,20 +33,20 @@ export function ApplicationCard({ application, job }: ApplicationCardProps) {
         </div>
 
         <div className="space-y-2 mb-4">
-          <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
             Applied {daysAgo === 0 ? 'today' : `${daysAgo} days ago`}
           </div>
-          <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Briefcase className="h-4 w-4" />
             <span className="capitalize">{job.workType}</span>
           </div>
         </div>
 
         {application.feedback && (
-          <div className="mb-4 rounded-lg bg-[#F3F4F6] p-3">
-            <p className="text-xs font-medium text-[#6B7280] uppercase mb-1">Feedback</p>
-            <p className="text-sm text-[#111827]">{application.feedback}</p>
+          <div className="mb-4 rounded-lg bg-muted p-3">
+            <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Feedback</p>
+            <p className="text-sm text-foreground">{application.feedback}</p>
           </div>
         )}
 

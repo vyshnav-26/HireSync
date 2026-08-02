@@ -58,7 +58,7 @@ export function ApplyDialog({ jobTitle, onSubmit, onCancel, isOpen }: ApplyDialo
           </div>
           <button
             onClick={onCancel}
-            className="rounded p-1 hover:bg-[#F3F4F6]"
+            className="rounded p-1 hover:bg-muted"
             disabled={isSubmitting}
           >
             <X className="h-5 w-5" />
@@ -70,7 +70,7 @@ export function ApplyDialog({ jobTitle, onSubmit, onCancel, isOpen }: ApplyDialo
             {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
 
             <div className="space-y-2">
-              <label htmlFor="coverLetter" className="text-sm font-medium text-[#111827]">
+              <label htmlFor="coverLetter" className="text-sm font-medium text-foreground">
                 Cover Letter
               </label>
               <Textarea
@@ -81,7 +81,7 @@ export function ApplyDialog({ jobTitle, onSubmit, onCancel, isOpen }: ApplyDialo
                 disabled={isSubmitting}
                 className="min-h-32"
               />
-              <p className="text-xs text-[#6B7280]">
+              <p className="text-xs text-muted-foreground">
                 {coverLetter.length} / 2000 characters
               </p>
             </div>

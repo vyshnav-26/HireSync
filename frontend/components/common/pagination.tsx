@@ -41,7 +41,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           >
             1
           </Button>
-          {startPage > 2 && <span className="text-[#6B7280]">...</span>}
+          {startPage > 2 && <span className="text-muted-foreground">...</span>}
         </>
       )}
 
@@ -58,7 +58,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
 
       {endPage < totalPages && (
         <>
-          {endPage < totalPages - 1 && <span className="text-[#6B7280]">...</span>}
+          {endPage < totalPages - 1 && <span className="text-muted-foreground">...</span>}
           <Button
             variant={currentPage === totalPages ? "default" : "outline"}
             size="sm"

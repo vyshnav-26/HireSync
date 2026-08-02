@@ -34,11 +34,12 @@ export default function JobDetailPage() {
         const jobResponse = await apiGet<Job>(`/api/recruiter/jobs/${jobId}`);
         setJob(jobResponse);
 
-        // Fetch applications
-        const appResponse = await apiGet<PaginatedResponse<ApplicationWithCandidate>>(
-          `/api/recruiter/jobs/${jobId}/applications?limit=50`
+        // Fetch applications (backend uses /candidates for job applications)
+        const appResponse = await apiGet<ApplicationWithCandidate[]>(
+          `/api/recruiter/jobs/${jobId}/candidates`
         );
-        setApplications(appResponse.data);
+        const apps = Array.isArray(appResponse) ? appResponse : (appResponse as any).data || [];
+        setApplications(apps);
       } catch (error) {
         console.error('Failed to fetch job data:', error);
       } finally {
@@ -52,7 +53,7 @@ export default function JobDetailPage() {
   if (isLoading) {
     return (
       <ProtectedRoute allowedUserTypes={['recruiter']}>
-        <div className="min-h-screen bg-[#F9FAFB] py-8">
+        <div className="min-h-screen bg-background py-8">
           <LoadingSpinner />
         </div>
       </ProtectedRoute>
@@ -62,11 +63,11 @@ export default function JobDetailPage() {
   if (!job) {
     return (
       <ProtectedRoute allowedUserTypes={['recruiter']}>
-        <div className="min-h-screen bg-[#F9FAFB] py-8">
+        <div className="min-h-screen bg-background py-8">
           <div className="mx-auto max-w-3xl px-4">
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-[#6B7280]">Job not found</p>
+                <p className="text-muted-foreground">Job not found</p>
               </CardContent>
             </Card>
           </div>
@@ -83,7 +84,7 @@ export default function JobDetailPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <Link href={ROUTES.RECRUITER_JOBS}>
@@ -98,8 +99,8 @@ export default function JobDetailPage() {
             <CardContent className="pt-6">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-[#111827]">{job.title}</h1>
-                  <p className="text-lg text-[#6B7280] mt-1">{job.company}</p>
+                  <h1 className="text-3xl font-bold text-foreground">{job.title}</h1>
+                  <p className="text-lg text-muted-foreground mt-1">{job.company}</p>
                 </div>
                 <Badge variant={statusColorMap[job.status]}>
                   {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
@@ -110,16 +111,16 @@ export default function JobDetailPage() {
                 <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-[#4F46E5]" />
                   <div>
-                    <p className="text-xs text-[#6B7280]">Location</p>
-                    <p className="font-medium text-[#111827]">{job.location}</p>
+                    <p className="text-xs text-muted-foreground">Location</p>
+                    <p className="font-medium text-foreground">{job.location}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <Briefcase className="h-5 w-5 text-[#4F46E5]" />
                   <div>
-                    <p className="text-xs text-[#6B7280]">Work Type</p>
-                    <p className="font-medium text-[#111827] capitalize">{job.workType}</p>
+                    <p className="text-xs text-muted-foreground">Work Type</p>
+                    <p className="font-medium text-foreground capitalize">{job.workType}</p>
                   </div>
                 </div>
 
@@ -127,8 +128,8 @@ export default function JobDetailPage() {
                   <div className="flex items-center gap-3">
                     <DollarSign className="h-5 w-5 text-[#4F46E5]" />
                     <div>
-                      <p className="text-xs text-[#6B7280]">Salary Range</p>
-                      <p className="font-medium text-[#111827]">
+                      <p className="text-xs text-muted-foreground">Salary Range</p>
+                      <p className="font-medium text-foreground">
                         ${job.salary.min.toLocaleString()} - ${job.salary.max.toLocaleString()}
                       </p>
                     </div>
@@ -138,8 +139,8 @@ export default function JobDetailPage() {
                 <div className="flex items-center gap-3">
                   <Users className="h-5 w-5 text-[#4F46E5]" />
                   <div>
-                    <p className="text-xs text-[#6B7280]">Applications</p>
-                    <p className="font-medium text-[#111827]">{applications.length}</p>
+                    <p className="text-xs text-muted-foreground">Applications</p>
+                    <p className="font-medium text-foreground">{applications.length}</p>
                   </div>
                 </div>
               </div>
@@ -152,7 +153,7 @@ export default function JobDetailPage() {
               <CardTitle>Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-[#6B7280] whitespace-pre-wrap">{job.description}</p>
+              <p className="text-muted-foreground whitespace-pre-wrap">{job.description}</p>
             </CardContent>
           </Card>
 
@@ -168,7 +169,7 @@ export default function JobDetailPage() {
                     <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#4F46E5] text-xs text-white flex-shrink-0 mt-0.5">
                       ✓
                     </span>
-                    <span className="text-[#6B7280]">{req}</span>
+                    <span className="text-muted-foreground">{req}</span>
                   </li>
                 ))}
               </ul>
@@ -190,11 +191,11 @@ export default function JobDetailPage() {
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between gap-4">
                             <div>
-                              <p className="font-medium text-[#111827]">{app.candidate.name}</p>
+                              <p className="font-medium text-foreground">{app.candidate.name}</p>
                               {app.candidate.headline && (
-                                <p className="text-sm text-[#6B7280]">{app.candidate.headline}</p>
+                                <p className="text-sm text-muted-foreground">{app.candidate.headline}</p>
                               )}
-                              <p className="text-xs text-[#6B7280] mt-2">
+                              <p className="text-xs text-muted-foreground mt-2">
                                 Applied on {new Date(app.appliedDate).toLocaleDateString()}
                               </p>
                             </div>
@@ -213,7 +214,7 @@ export default function JobDetailPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-[#6B7280] py-8">No applications yet</p>
+                <p className="text-center text-muted-foreground py-8">No applications yet</p>
               )}
             </CardContent>
           </Card>

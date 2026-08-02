@@ -6,14 +6,14 @@ import { Briefcase, Users, Zap, TrendingUp } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#111827] mb-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
             AI-Powered Recruitment
           </h1>
-          <p className="text-xl text-[#6B7280] mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Connect talented professionals with opportunities. Our AI recruitment platform makes hiring faster, smarter, and more effective.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -32,16 +32,16 @@ export default function Home() {
       </section>
 
       {/* Demo Credentials */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white border-y border-[#E5E7EB]">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-card border-y border-border">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-2xl font-bold text-[#111827] mb-6 text-center">Demo Credentials</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6 text-center">Demo Credentials</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-2 mb-4">
-                  <p className="text-sm text-[#6B7280]">Candidate Account</p>
-                  <p className="font-mono bg-[#F3F4F6] p-2 rounded text-sm">candidate@demo.com</p>
-                  <p className="font-mono bg-[#F3F4F6] p-2 rounded text-sm">password</p>
+                  <p className="text-sm text-muted-foreground">Candidate Account</p>
+                  <p className="font-mono bg-muted p-2 rounded text-sm">candidate@demo.com</p>
+                  <p className="font-mono bg-muted p-2 rounded text-sm">password</p>
                 </div>
                 <Link href={ROUTES.LOGIN}>
                   <Button variant="outline" className="w-full">Try as Candidate</Button>
@@ -52,9 +52,9 @@ export default function Home() {
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-2 mb-4">
-                  <p className="text-sm text-[#6B7280]">Recruiter Account</p>
-                  <p className="font-mono bg-[#F3F4F6] p-2 rounded text-sm">recruiter@demo.com</p>
-                  <p className="font-mono bg-[#F3F4F6] p-2 rounded text-sm">password</p>
+                  <p className="text-sm text-muted-foreground">Recruiter Account</p>
+                  <p className="font-mono bg-muted p-2 rounded text-sm">recruiter@demo.com</p>
+                  <p className="font-mono bg-muted p-2 rounded text-sm">password</p>
                 </div>
                 <Link href={ROUTES.LOGIN}>
                   <Button variant="outline" className="w-full">Try as Recruiter</Button>
@@ -68,7 +68,7 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold text-[#111827] mb-12 text-center">Why AI Recruiter?</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-12 text-center">Why AI Recruiter?</h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardContent className="pt-6">
@@ -76,8 +76,8 @@ export default function Home() {
                   <div className="h-12 w-12 bg-[#DBEAFE] rounded-lg flex items-center justify-center">
                     <Zap className="h-6 w-6 text-[#3B82F6]" />
                   </div>
-                  <h3 className="font-semibold text-[#111827]">Lightning Fast</h3>
-                  <p className="text-sm text-[#6B7280]">Quick job matching powered by AI</p>
+                  <h3 className="font-semibold text-foreground">Lightning Fast</h3>
+                  <p className="text-sm text-muted-foreground">Quick job matching powered by AI</p>
                 </div>
               </CardContent>
             </Card>
@@ -88,8 +88,8 @@ export default function Home() {
                   <div className="h-12 w-12 bg-[#FEE2E2] rounded-lg flex items-center justify-center">
                     <Users className="h-6 w-6 text-[#EF4444]" />
                   </div>
-                  <h3 className="font-semibold text-[#111827]">Better Talent</h3>
-                  <p className="text-sm text-[#6B7280]">Connect with qualified candidates</p>
+                  <h3 className="font-semibold text-foreground">Better Talent</h3>
+                  <p className="text-sm text-muted-foreground">Connect with qualified candidates</p>
                 </div>
               </CardContent>
             </Card>
@@ -100,8 +100,8 @@ export default function Home() {
                   <div className="h-12 w-12 bg-[#ECFDF5] rounded-lg flex items-center justify-center">
                     <Briefcase className="h-6 w-6 text-[#10B981]" />
                   </div>
-                  <h3 className="font-semibold text-[#111827]">Easy to Use</h3>
-                  <p className="text-sm text-[#6B7280]">Simple and intuitive interface</p>
+                  <h3 className="font-semibold text-foreground">Easy to Use</h3>
+                  <p className="text-sm text-muted-foreground">Simple and intuitive interface</p>
                 </div>
               </CardContent>
             </Card>
@@ -112,8 +112,8 @@ export default function Home() {
                   <div className="h-12 w-12 bg-[#FEF3C7] rounded-lg flex items-center justify-center">
                     <TrendingUp className="h-6 w-6 text-[#F59E0B]" />
                   </div>
-                  <h3 className="font-semibold text-[#111827]">Data Driven</h3>
-                  <p className="text-sm text-[#6B7280]">Insights to improve hiring</p>
+                  <h3 className="font-semibold text-foreground">Data Driven</h3>
+                  <p className="text-sm text-muted-foreground">Insights to improve hiring</p>
                 </div>
               </CardContent>
             </Card>
@@ -130,7 +130,7 @@ export default function Home() {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href={ROUTES.REGISTER}>
-              <Button size="lg" variant="outline" className="text-[#4F46E5] border-white hover:bg-white">
+              <Button size="lg" variant="outline" className="text-[#4F46E5] border-white hover:bg-card">
                 Get Started Free
               </Button>
             </Link>
@@ -139,7 +139,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-[#E5E7EB] text-center text-[#6B7280]">
+      <footer className="py-8 px-4 border-t border-border text-center text-muted-foreground">
         <p>&copy; 2024 AI Recruiter. All rights reserved.</p>
       </footer>
     </div>

@@ -19,7 +19,7 @@ export function CandidateListItemComponent({ candidate, onViewProfile }: Candida
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-[#111827]">
+            <h3 className="text-lg font-semibold text-foreground">
               {candidate.name}
             </h3>
             {candidate.headline && (
@@ -42,13 +42,13 @@ export function CandidateListItemComponent({ candidate, onViewProfile }: Candida
 
         <div className="space-y-2 mb-4">
           {candidate.location && (
-            <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="h-4 w-4" />
               {candidate.location}
             </div>
           )}
           {candidate.experience && (
-            <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Briefcase className="h-4 w-4" />
               {candidate.experience}
             </div>
@@ -57,7 +57,7 @@ export function CandidateListItemComponent({ candidate, onViewProfile }: Candida
 
         {candidate.skills && candidate.skills.length > 0 && (
           <div className="mb-4">
-            <p className="text-xs text-[#6B7280] uppercase font-medium mb-2">Skills</p>
+            <p className="text-xs text-muted-foreground uppercase font-medium mb-2">Skills</p>
             <div className="flex flex-wrap gap-2">
               {candidate.skills.slice(0, 3).map((skill) => (
                 <Badge key={skill} variant="secondary">

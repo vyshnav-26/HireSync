@@ -51,7 +51,7 @@ export default function EditJobPage() {
   if (isLoading) {
     return (
       <ProtectedRoute allowedUserTypes={['recruiter']}>
-        <div className="min-h-screen bg-[#F9FAFB] py-8">
+        <div className="min-h-screen bg-background py-8">
           <LoadingSpinner />
         </div>
       </ProtectedRoute>
@@ -61,9 +61,9 @@ export default function EditJobPage() {
   if (!job) {
     return (
       <ProtectedRoute allowedUserTypes={['recruiter']}>
-        <div className="min-h-screen bg-[#F9FAFB] py-8">
+        <div className="min-h-screen bg-background py-8">
           <div className="mx-auto max-w-3xl px-4">
-            <p className="text-[#6B7280]">Job not found</p>
+            <p className="text-muted-foreground">Job not found</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -72,7 +72,7 @@ export default function EditJobPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <Link href={`${ROUTES.RECRUITER_JOBS}/${jobId}`}>

@@ -19,32 +19,32 @@ export function JobCard({ job, onApply, applied }: JobCardProps) {
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-[#111827] mb-1">
+            <h3 className="text-lg font-semibold text-foreground mb-1">
               {job.title}
             </h3>
-            <p className="text-sm text-[#6B7280]">{job.company}</p>
+            <p className="text-sm text-muted-foreground">{job.company}</p>
           </div>
           {isRecent && <Badge variant="success">New</Badge>}
         </div>
 
         <div className="space-y-3 mb-4">
-          <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4" />
             {job.location}
           </div>
-          <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Briefcase className="h-4 w-4" />
             <span className="capitalize">{job.workType}</span>
           </div>
           {job.salary && (
-            <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <DollarSign className="h-4 w-4" />
               ${job.salary.min.toLocaleString()} - ${job.salary.max.toLocaleString()}
             </div>
           )}
         </div>
 
-        <p className="text-sm text-[#6B7280] mb-4 line-clamp-2">
+        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
           {job.description}
         </p>
 

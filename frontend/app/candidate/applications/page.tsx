@@ -35,11 +35,12 @@ export default function ApplicationsPage() {
           params.set('status', statusFilter);
         }
 
-        const response = await apiGet<PaginatedResponse<Application & { job: Job }>>(
-          `/api/candidate/applications?${params.toString()}`
+        const response = await apiGet<Application[]>(
+          `/api/job-seeker/applications?${params.toString()}`
         );
-        setApplications(response.data);
-        setTotalPages(response.pagination.totalPages);
+        const apps = Array.isArray(response) ? response : (response as any).data || [];
+        setApplications(apps);
+        setTotalPages(1);
       } catch (error) {
         console.error('Failed to fetch applications:', error);
       } finally {
@@ -61,12 +62,12 @@ export default function ApplicationsPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['candidate']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#111827]">My Applications</h1>
-            <p className="mt-2 text-[#6B7280]">
+            <h1 className="text-3xl font-bold text-foreground">My Applications</h1>
+            <p className="mt-2 text-muted-foreground">
               Track all your job applications in one place
             </p>
           </div>
@@ -75,8 +76,8 @@ export default function ApplicationsPage() {
           <Card className="mb-8">
             <CardContent className="pt-6">
               <div className="flex items-center gap-2 mb-4">
-                <Filter className="h-5 w-5 text-[#6B7280]" />
-                <span className="font-medium text-[#111827]">Filter by Status</span>
+                <Filter className="h-5 w-5 text-muted-foreground" />
+                <span className="font-medium text-foreground">Filter by Status</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {statusOptions.map((option) => (
@@ -121,10 +122,10 @@ export default function ApplicationsPage() {
               <CardContent className="py-12">
                 <div className="text-center">
                   <Briefcase className="mx-auto h-12 w-12 text-[#E5E7EB] mb-4" />
-                  <p className="text-[#6B7280] mb-4">
+                  <p className="text-muted-foreground mb-4">
                     No applications found
                   </p>
-                  <p className="text-sm text-[#6B7280]">
+                  <p className="text-sm text-muted-foreground">
                     Start applying to jobs to see them here
                   </p>
                 </div>

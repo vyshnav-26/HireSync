@@ -9,7 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/common/loading-spinner';
 import { JobListItem } from '@/components/recruiter/job-list-item';
-import { Select } from '@/components/ui/select';
+import { 
+  Select, 
+  SelectTrigger, 
+  SelectValue, 
+  SelectContent, 
+  SelectItem 
+} from '@/components/ui/select';
 import { apiGet, apiDelete } from '@/lib/api-client';
 import { Job, PaginatedResponse } from '@/lib/types';
 import { ROUTES } from '@/lib/constants';
@@ -39,11 +45,12 @@ export default function JobsManagementPage() {
           params.set('status', statusFilter);
         }
 
-        const response = await apiGet<PaginatedResponse<Job>>(
+        const response = await apiGet<Job[]>(
           `/api/recruiter/jobs?${params.toString()}`
         );
-        setJobs(response.data);
-        setTotalPages(response.pagination.totalPages);
+        const fetchedJobs = Array.isArray(response) ? response : (response as any).data || [];
+        setJobs(fetchedJobs);
+        setTotalPages(1); // Backend currently doesn't paginate
       } catch (error) {
         console.error('Failed to fetch jobs:', error);
       } finally {
@@ -71,13 +78,13 @@ export default function JobsManagementPage() {
 
   return (
     <ProtectedRoute allowedUserTypes={['recruiter']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-[#111827]">Job Postings</h1>
-              <p className="mt-2 text-[#6B7280]">Manage all your job listings</p>
+              <h1 className="text-3xl font-bold text-foreground">Job Postings</h1>
+              <p className="mt-2 text-muted-foreground">Manage all your job listings</p>
             </div>
             <Link href={`${ROUTES.RECRUITER_JOBS}/new`}>
               <Button className="gap-2">
@@ -93,17 +100,21 @@ export default function JobsManagementPage() {
               <div className="grid gap-4 md:grid-cols-3">
                 <Select
                   value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value as JobStatus);
+                  onValueChange={(val) => {
+                    setStatusFilter(val as JobStatus);
                     setCurrentPage(1);
                   }}
-                  options={[
-                    { value: 'all', label: 'All Jobs' },
-                    { value: 'draft', label: 'Draft' },
-                    { value: 'open', label: 'Open' },
-                    { value: 'closed', label: 'Closed' },
-                  ]}
-                />
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Jobs" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Jobs</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="open">Open</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
@@ -137,7 +148,7 @@ export default function JobsManagementPage() {
             <Card>
               <CardContent className="py-12">
                 <div className="text-center">
-                  <p className="text-[#6B7280] mb-4">No jobs found</p>
+                  <p className="text-muted-foreground mb-4">No jobs found</p>
                   <Link href={`${ROUTES.RECRUITER_JOBS}/new`}>
                     <Button>Create Your First Job</Button>
                   </Link>

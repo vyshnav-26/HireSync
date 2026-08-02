@@ -9,12 +9,12 @@ export interface BadgeProps
 const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
   ({ className, variant = "default", ...props }, ref) => {
     const variantClasses = {
-      default: "bg-[#4F46E5] text-white",
-      secondary: "bg-[#E5E7EB] text-[#111827]",
-      success: "bg-[#ECFDF5] text-[#10B981]",
-      warning: "bg-[#FFFBEB] text-[#F59E0B]",
-      danger: "bg-[#FEE2E2] text-[#EF4444]",
-      info: "bg-[#DBEAFE] text-[#3B82F6]",
+      default: "bg-primary text-primary-foreground",
+      secondary: "bg-secondary text-secondary-foreground",
+      success: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+      warning: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
+      danger: "bg-destructive text-destructive-foreground dark:bg-destructive/20 dark:text-destructive-foreground",
+      info: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
     }
 
     return (

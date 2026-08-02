@@ -1,7 +1,13 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
+import { 
+  Select, 
+  SelectTrigger, 
+  SelectValue, 
+  SelectContent, 
+  SelectItem 
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import { JobFilters } from '@/lib/types';
@@ -40,27 +46,35 @@ export function JobFiltersComponent({ filters, onFiltersChange }: JobFiltersProp
         />
 
         <Select
-          value={filters.location || ''}
-          onChange={(e) => handleLocationChange(e.target.value)}
-          options={[
-            { value: '', label: 'All Locations' },
-            { value: 'San Francisco, CA', label: 'San Francisco, CA' },
-            { value: 'New York, NY', label: 'New York, NY' },
-            { value: 'Remote', label: 'Remote' },
-            { value: 'Austin, TX', label: 'Austin, TX' },
-          ]}
-        />
+          value={filters.location || 'all'}
+          onValueChange={(val) => handleLocationChange(val === 'all' ? '' : val)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="All Locations" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Locations</SelectItem>
+            <SelectItem value="San Francisco, CA">San Francisco, CA</SelectItem>
+            <SelectItem value="New York, NY">New York, NY</SelectItem>
+            <SelectItem value="Remote">Remote</SelectItem>
+            <SelectItem value="Austin, TX">Austin, TX</SelectItem>
+          </SelectContent>
+        </Select>
 
         <Select
-          value={filters.workType || ''}
-          onChange={(e) => handleWorkTypeChange(e.target.value)}
-          options={[
-            { value: '', label: 'All Work Types' },
-            { value: 'remote', label: 'Remote' },
-            { value: 'hybrid', label: 'Hybrid' },
-            { value: 'on-site', label: 'On-site' },
-          ]}
-        />
+          value={filters.workType || 'all'}
+          onValueChange={(val) => handleWorkTypeChange(val === 'all' ? '' : val)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="All Work Types" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Work Types</SelectItem>
+            <SelectItem value="remote">Remote</SelectItem>
+            <SelectItem value="hybrid">Hybrid</SelectItem>
+            <SelectItem value="on-site">On-site</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {hasFilters && (

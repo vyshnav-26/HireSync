@@ -28,17 +28,18 @@ export default function CandidateDashboard() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const response = await apiGet<PaginatedResponse<Application & { job: Job }>>(
-          '/api/candidate/applications?page=1&limit=5'
+        const response = await apiGet<Array<Application & { job: Job }>>(
+          '/api/job-seeker/applications'
         );
-        setApplications(response.data);
+        const apps = Array.isArray(response) ? response : (response as any).data || [];
+        setApplications(apps);
 
         // Calculate stats
         const stats = {
-          totalApplications: response.data.length,
-          under_review: response.data.filter(a => a.status === 'under_review').length,
-          shortlisted: response.data.filter(a => a.status === 'shortlisted').length,
-          hired: response.data.filter(a => a.status === 'hired').length,
+          totalApplications: apps.length,
+          under_review: apps.filter(a => a.status === 'under_review').length,
+          shortlisted: apps.filter(a => a.status === 'shortlisted').length,
+          hired: apps.filter(a => a.status === 'hired').length,
         };
         setStats(stats);
       } catch (error) {
@@ -53,14 +54,14 @@ export default function CandidateDashboard() {
 
   return (
     <ProtectedRoute allowedUserTypes={['candidate']}>
-      <div className="min-h-screen bg-[#F9FAFB] py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#111827]">
+            <h1 className="text-3xl font-bold text-foreground">
               Welcome back, {user?.name}!
             </h1>
-            <p className="mt-2 text-[#6B7280]">
+            <p className="mt-2 text-muted-foreground">
               Track your applications and discover new opportunities
             </p>
           </div>
@@ -73,7 +74,7 @@ export default function CandidateDashboard() {
                   <div className="text-3xl font-bold text-[#4F46E5]">
                     {stats.totalApplications}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Total Applications</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Total Applications</p>
                 </div>
               </CardContent>
             </Card>
@@ -84,7 +85,7 @@ export default function CandidateDashboard() {
                   <div className="text-3xl font-bold text-[#3B82F6]">
                     {stats.under_review}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Under Review</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Under Review</p>
                 </div>
               </CardContent>
             </Card>
@@ -95,7 +96,7 @@ export default function CandidateDashboard() {
                   <div className="text-3xl font-bold text-[#F59E0B]">
                     {stats.shortlisted}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Shortlisted</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Shortlisted</p>
                 </div>
               </CardContent>
             </Card>
@@ -106,7 +107,7 @@ export default function CandidateDashboard() {
                   <div className="text-3xl font-bold text-[#10B981]">
                     {stats.hired}
                   </div>
-                  <p className="mt-2 text-sm text-[#6B7280]">Hired</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Hired</p>
                 </div>
               </CardContent>
             </Card>
@@ -118,8 +119,8 @@ export default function CandidateDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="flex items-center justify-between p-6">
                   <div>
-                    <p className="font-medium text-[#111827]">Browse Jobs</p>
-                    <p className="text-sm text-[#6B7280]">Find new opportunities</p>
+                    <p className="font-medium text-foreground">Browse Jobs</p>
+                    <p className="text-sm text-muted-foreground">Find new opportunities</p>
                   </div>
                   <ArrowRight className="h-5 w-5 text-[#4F46E5]" />
                 </CardContent>
@@ -130,8 +131,8 @@ export default function CandidateDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="flex items-center justify-between p-6">
                   <div>
-                    <p className="font-medium text-[#111827]">Update Profile</p>
-                    <p className="text-sm text-[#6B7280]">Improve your profile</p>
+                    <p className="font-medium text-foreground">Update Profile</p>
+                    <p className="text-sm text-muted-foreground">Improve your profile</p>
                   </div>
                   <ArrowRight className="h-5 w-5 text-[#4F46E5]" />
                 </CardContent>
@@ -142,8 +143,8 @@ export default function CandidateDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="flex items-center justify-between p-6">
                   <div>
-                    <p className="font-medium text-[#111827]">My Applications</p>
-                    <p className="text-sm text-[#6B7280]">View all {stats.totalApplications}</p>
+                    <p className="font-medium text-foreground">My Applications</p>
+                    <p className="text-sm text-muted-foreground">View all {stats.totalApplications}</p>
                   </div>
                   <ArrowRight className="h-5 w-5 text-[#4F46E5]" />
                 </CardContent>
@@ -169,7 +170,7 @@ export default function CandidateDashboard() {
               ) : (
                 <div className="text-center py-8">
                   <Briefcase className="mx-auto h-12 w-12 text-[#E5E7EB] mb-2" />
-                  <p className="text-[#6B7280]">No applications yet</p>
+                  <p className="text-muted-foreground">No applications yet</p>
                   <Link href={ROUTES.CANDIDATE_JOBS}>
                     <Button className="mt-4">Browse Jobs</Button>
                   </Link>
