@@ -23,4 +23,19 @@ public class Profile {
     private String fullName;
     
     private String resumeUri;
+
+    private String headline;
+    
+    @Column(length = 2000)
+    private String bio;
+    
+    private String location;
+    
+    private String skills; // Can store as comma-separated string for now
+    
+    private String experience;
+    
+    private String company;
+    
+    private String position;
 }

@@ -35,4 +35,20 @@ public class JobPosting {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private String customCriteria;
+
+    private String company;
+    private String location;
+    private String workType;
+    
+    @Column(name = "status")
+    @Builder.Default
+    private String status = "open";
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private java.util.List<String> requirements;
+
+    private Integer salaryMin;
+    private Integer salaryMax;
+    private String salaryCurrency;
 }
