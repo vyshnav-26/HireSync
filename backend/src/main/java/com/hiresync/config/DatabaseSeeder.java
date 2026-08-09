@@ -3,6 +3,7 @@ package com.hiresync.config;
 import com.hiresync.entity.*;
 import com.hiresync.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,10 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(
+    name = "app.seed-data",
+    havingValue = "true"
+)
 public class DatabaseSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
