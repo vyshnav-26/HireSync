@@ -1,0 +1,7 @@
+target/
+uploads/
+*.log
+.mvn/
+.git/
+.idea/
+.vscode/

@@ -48,28 +48,38 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         log.info("Initializing HireSync High-Performance DataSource (Preference: PostgreSQL IPv4 -> Localhost -> IPv6 -> MySQL)...");
 
-        // Ordered database candidate URLs: IPv4 first, then localhost, then IPv6
         record PgCandidate(String name, String host, String dbUrl, String adminUrl) {}
-        List<PgCandidate> pgCandidates = List.of(
-            new PgCandidate(
-                "PostgreSQL IPv4 (127.0.0.1:5432)",
-                "127.0.0.1:5432",
-                "jdbc:postgresql://127.0.0.1:5432/hiresync?sslmode=disable&connectTimeout=10&loginTimeout=10",
-                "jdbc:postgresql://127.0.0.1:5432/postgres?sslmode=disable&connectTimeout=5&loginTimeout=5"
-            ),
-            new PgCandidate(
-                "PostgreSQL Localhost (localhost:5432)",
-                "localhost:5432",
-                "jdbc:postgresql://localhost:5432/hiresync?sslmode=disable&connectTimeout=10&loginTimeout=10",
-                "jdbc:postgresql://localhost:5432/postgres?sslmode=disable&connectTimeout=5&loginTimeout=5"
-            ),
-            new PgCandidate(
-                "PostgreSQL IPv6 ([::1]:5432)",
-                "[::1]:5432",
-                "jdbc:postgresql://[::1]:5432/hiresync?sslmode=disable&connectTimeout=10&loginTimeout=10",
-                "jdbc:postgresql://[::1]:5432/postgres?sslmode=disable&connectTimeout=5&loginTimeout=5"
-            )
-        );
+        List<PgCandidate> pgCandidates = new java.util.ArrayList<>();
+
+        // If a custom cloud/remote database URL is injected via SPRING_DATASOURCE_URL, test it first
+        if (pgUrl != null && !pgUrl.isBlank() && !pgUrl.contains("127.0.0.1") && !pgUrl.contains("localhost") && !pgUrl.contains("[::1]")) {
+            pgCandidates.add(new PgCandidate(
+                "Configured Cloud PostgreSQL (" + pgUrl + ")",
+                "Cloud Host",
+                pgUrl,
+                null
+            ));
+        }
+
+        // Standard ordered local database candidate URLs: IPv4 first, then localhost, then IPv6
+        pgCandidates.add(new PgCandidate(
+            "PostgreSQL IPv4 (127.0.0.1:5432)",
+            "127.0.0.1:5432",
+            "jdbc:postgresql://127.0.0.1:5432/hiresync?sslmode=disable&connectTimeout=10&loginTimeout=10",
+            "jdbc:postgresql://127.0.0.1:5432/postgres?sslmode=disable&connectTimeout=5&loginTimeout=5"
+        ));
+        pgCandidates.add(new PgCandidate(
+            "PostgreSQL Localhost (localhost:5432)",
+            "localhost:5432",
+            "jdbc:postgresql://localhost:5432/hiresync?sslmode=disable&connectTimeout=10&loginTimeout=10",
+            "jdbc:postgresql://localhost:5432/postgres?sslmode=disable&connectTimeout=5&loginTimeout=5"
+        ));
+        pgCandidates.add(new PgCandidate(
+            "PostgreSQL IPv6 ([::1]:5432)",
+            "[::1]:5432",
+            "jdbc:postgresql://[::1]:5432/hiresync?sslmode=disable&connectTimeout=10&loginTimeout=10",
+            "jdbc:postgresql://[::1]:5432/postgres?sslmode=disable&connectTimeout=5&loginTimeout=5"
+        ));
 
         for (PgCandidate candidate : pgCandidates) {
             try {
