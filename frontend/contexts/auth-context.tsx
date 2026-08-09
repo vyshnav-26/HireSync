@@ -28,7 +28,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<User> => {
     setIsLoading(true);
     try {
       const response = await apiPost<{ token: string; user: User }>('/api/auth/login', {
@@ -40,6 +40,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       storage.setUser(response.user);
       setToken(response.token);
       setUser(response.user);
+      return response.user;
     } finally {
       setIsLoading(false);
     }

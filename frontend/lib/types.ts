@@ -29,7 +29,7 @@ export interface Recruiter extends User {
 export interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   register: (name: string, email: string, password: string, userType: 'candidate' | 'recruiter', company?: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -54,6 +54,8 @@ export interface Job {
   createdBy: string; // recruiter ID
   status: 'open' | 'closed' | 'draft';
   applicantCount?: number;
+  hiringPhases?: string[];
+  questionnaire?: string[];
 }
 
 // Application Types
@@ -66,6 +68,31 @@ export interface Application {
   coverLetter: string;
   rating?: number;
   feedback?: string;
+  hiringPhases?: string[];
+  currentPhaseIndex?: number;
+  currentPhaseName?: string;
+  phaseStatus?: string;
+  emailLogs?: Array<{
+    timestamp: string;
+    type: string;
+    subject: string;
+    body: string;
+  }>;
+  job?: {
+    id: string;
+    title: string;
+    company: string;
+  };
+  candidate?: {
+    id: string;
+    name: string;
+    email: string;
+    headline?: string;
+    location?: string;
+    experience?: string;
+    bio?: string;
+    skills?: string[];
+  };
 }
 
 // Candidate List for Recruiter
@@ -73,6 +100,10 @@ export interface CandidateListItem extends Candidate {
   applicationId?: string;
   applicationStatus?: string;
   matchScore?: number;
+  currentPhaseIndex?: number;
+  phaseStatus?: string;
+  jobId?: string;
+  jobTitle?: string;
 }
 
 // Pagination

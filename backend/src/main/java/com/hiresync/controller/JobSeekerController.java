@@ -33,13 +33,36 @@ public class JobSeekerController {
         String uri = storageService.uploadFile(file);
         var user = userDetails.getUser();
         user.getProfile().setResumeUri(uri);
+        
+        // Direct in-PostgreSQL storage option (Base64 data URI)
+        try {
+            byte[] fileBytes = file.getBytes();
+            String base64Data = java.util.Base64.getEncoder().encodeToString(fileBytes);
+            user.getProfile().setResumeData(base64Data);
+        } catch (Exception e) {
+            System.err.println("Could not cache resume in PostgreSQL: " + e.getMessage());
+        }
+        
+        userRepository.save(user);
         return ResponseEntity.ok(uri);
     }
 
     @GetMapping("/jobs")
-    public ResponseEntity<List<com.hiresync.dto.JobPostingDto>> listJobs() {
-        List<JobPosting> jobs = jobPostingRepository.findAll();
-        return ResponseEntity.ok(jobs.stream().map(this::convertToJobDto).toList());
+    public ResponseEntity<org.springframework.data.domain.Page<com.hiresync.dto.JobPostingDto>> listJobs(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String workType,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit) {
+        
+        String searchPattern = (search != null && !search.trim().isEmpty()) ? "%" + search.trim().toLowerCase() + "%" : null;
+        String locationPattern = (location != null && !location.trim().isEmpty()) ? "%" + location.trim().toLowerCase() + "%" : null;
+        String workTypeParam = (workType != null && !workType.trim().isEmpty()) ? workType.trim().toLowerCase() : null;
+        
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(Math.max(0, page - 1), limit);
+        org.springframework.data.domain.Page<JobPosting> jobPage = jobPostingRepository.searchOpenJobs(searchPattern, locationPattern, workTypeParam, pageable);
+        
+        return ResponseEntity.ok(jobPage.map(this::convertToJobDto));
     }
 
     @GetMapping("/jobs/{jobId}")
@@ -62,10 +85,20 @@ public class JobSeekerController {
                 customCriteria = new com.fasterxml.jackson.databind.ObjectMapper().readValue(job.getCustomCriteria(), Object.class);
             } catch (Exception e) {}
         }
+        
+        String companyName = job.getCompany();
+        if (companyName == null || companyName.isBlank()) {
+            if (job.getRecruiter() != null && job.getRecruiter().getProfile() != null && job.getRecruiter().getProfile().getCompany() != null && !job.getRecruiter().getProfile().getCompany().isBlank()) {
+                companyName = job.getRecruiter().getProfile().getCompany();
+            } else {
+                companyName = "HireSync Network";
+            }
+        }
+
         return com.hiresync.dto.JobPostingDto.builder()
                 .id(job.getId().toString())
                 .title(job.getTitle() != null ? job.getTitle() : "Untitled")
-                .company(job.getCompany() != null ? job.getCompany() : "Unknown Company")
+                .company(companyName)
                 .location(job.getLocation() != null ? job.getLocation() : "Remote")
                 .workType(job.getWorkType() != null ? job.getWorkType() : "full-time")
                 .description(job.getDescription() != null ? job.getDescription() : "")
@@ -79,26 +112,92 @@ public class JobSeekerController {
     }
 
     @PostMapping("/jobs/{jobId}/apply")
-    public ResponseEntity<String> applyForJob(@PathVariable Long jobId, 
-                                              @RequestBody String criteriaAnswers, 
-                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> applyForJob(@PathVariable Long jobId, 
+                                         @RequestBody(required = false) String criteriaAnswers, 
+                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
         var user = userDetails.getUser();
+        var profile = user.getProfile();
+        
+        if (profile == null || profile.getResumeUri() == null || profile.getResumeUri().isBlank() || profile.getSkills() == null || profile.getSkills().isBlank()) {
+            return ResponseEntity.badRequest().body("Incomplete profile. Please upload your resume and fill in your skills before applying.");
+        }
+
         var job = jobPostingRepository.findById(jobId).orElseThrow();
         
-        String aiReasoning = geminiAiService.evaluateCandidate(user.getProfile().getResumeUri(), job.getDescription(), criteriaAnswers);
+        if (applicationRepository.findByCandidateIdAndJobPostingId(user.getId(), jobId).isPresent()) {
+            return ResponseEntity.badRequest().body("Already applied to this job");
+        }
+        
+        String companyName = (job.getCompany() != null && !job.getCompany().isBlank()) ? job.getCompany() : 
+            (job.getRecruiter() != null && job.getRecruiter().getProfile() != null ? job.getRecruiter().getProfile().getCompany() : "HireSync Network");
+
+        String coverLetterText = criteriaAnswers;
+        if (coverLetterText == null || coverLetterText.isBlank() || coverLetterText.trim().equals("{}") || coverLetterText.trim().equals("{\"text\": \"\"}")) {
+            coverLetterText = geminiAiService.generateCoverLetter(profile.getFullName(), profile.getHeadline(), profile.getSkills(), job.getTitle(), companyName, job.getDescription());
+        } else if (!coverLetterText.trim().startsWith("{") && !coverLetterText.trim().startsWith("[")) {
+            // Keep plain text as is
+        }
+
+        String jsonAnswers = "{\"text\": \"" + coverLetterText.replace("\"", "\\\"").replace("\n", "\\n") + "\"}";
+
+        var eval = geminiAiService.evaluateCandidateWithDetails(profile.getResumeUri(), profile.getSkills(), job.getDescription(), job.getRequirements());
 
         Application app = Application.builder()
                 .candidate(user)
                 .jobPosting(job)
-                .resumeUriSnapshot(user.getProfile().getResumeUri())
-                .customCriteriaAnswers(criteriaAnswers)
-                .aiReasoning(aiReasoning)
+                .resumeUriSnapshot(profile.getResumeUri())
+                .customCriteriaAnswers(jsonAnswers)
+                .aiReasoning(eval.getReasoning())
                 .status(ApplicationStatus.APPLIED)
-                .fitnessScore(85)
+                .fitnessScore(eval.getScore())
                 .build();
         
         applicationRepository.save(app);
         return ResponseEntity.ok("Applied successfully");
+    }
+
+    @PostMapping("/jobs/auto-apply")
+    public ResponseEntity<?> autoApply(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        var user = userDetails.getUser();
+        var profile = user.getProfile();
+        if (profile == null || profile.getResumeUri() == null || profile.getResumeUri().isBlank() || profile.getSkills() == null || profile.getSkills().isBlank()) {
+            return ResponseEntity.badRequest().body("Incomplete profile. Please upload your resume and add skills to use AI Auto-Apply.");
+        }
+        
+        List<JobPosting> openJobs = jobPostingRepository.findAll().stream()
+            .filter(j -> j.getStatus() == null || "open".equalsIgnoreCase(j.getStatus()) || "active".equalsIgnoreCase(j.getStatus()))
+            .toList();
+
+        List<String> autoAppliedJobTitles = new java.util.ArrayList<>();
+        for (JobPosting job : openJobs) {
+            if (applicationRepository.findByCandidateIdAndJobPostingId(user.getId(), job.getId()).isEmpty()) {
+                var eval = geminiAiService.evaluateCandidateWithDetails(profile.getResumeUri(), profile.getSkills(), job.getDescription(), job.getRequirements());
+                if (eval.getScore() >= 80) {
+                    String companyName = (job.getCompany() != null && !job.getCompany().isBlank()) ? job.getCompany() : 
+                        (job.getRecruiter() != null && job.getRecruiter().getProfile() != null ? job.getRecruiter().getProfile().getCompany() : "HireSync Network");
+                    
+                    String generatedLetter = geminiAiService.generateCoverLetter(profile.getFullName(), profile.getHeadline(), profile.getSkills(), job.getTitle(), companyName, job.getDescription());
+                    String jsonAnswers = "{\"auto_applied\": true, \"matched_score\": " + eval.getScore() + ", \"text\": \"" + generatedLetter.replace("\"", "\\\"").replace("\n", "\\n") + "\"}";
+
+                    Application app = Application.builder()
+                            .candidate(user)
+                            .jobPosting(job)
+                            .resumeUriSnapshot(profile.getResumeUri())
+                            .customCriteriaAnswers(jsonAnswers)
+                            .aiReasoning(eval.getReasoning())
+                            .status(ApplicationStatus.APPLIED)
+                            .fitnessScore(eval.getScore())
+                            .build();
+                    applicationRepository.save(app);
+                    autoAppliedJobTitles.add(job.getTitle() + " (" + eval.getScore() + "% Match)");
+                }
+            }
+        }
+        
+        java.util.Map<String, Object> resp = new java.util.HashMap<>();
+        resp.put("count", autoAppliedJobTitles.size());
+        resp.put("appliedJobs", autoAppliedJobTitles);
+        return ResponseEntity.ok(resp);
     }
 
     @GetMapping("/applications")
@@ -130,17 +229,21 @@ public class JobSeekerController {
             candidateMap.put("skills", new String[0]);
         }
 
+        String companyName = (job.getCompany() != null && !job.getCompany().isBlank()) ? job.getCompany() : 
+            (job.getRecruiter() != null && job.getRecruiter().getProfile() != null && job.getRecruiter().getProfile().getCompany() != null && !job.getRecruiter().getProfile().getCompany().isBlank() 
+                ? job.getRecruiter().getProfile().getCompany() : "HireSync Network");
+
         java.util.Map<String, Object> jobMap = new java.util.HashMap<>();
         jobMap.put("id", job.getId().toString());
         jobMap.put("title", job.getTitle());
-        jobMap.put("company", "HireSync"); 
+        jobMap.put("company", companyName); 
 
         return com.hiresync.dto.ApplicationDetailDto.builder()
                 .id(app.getId().toString())
                 .jobId(job.getId().toString())
                 .candidateId(candidate.getId().toString())
                 .status(app.getStatus().name().toLowerCase())
-                .appliedDate("2026-08-01T00:00:00Z") // mock
+                .appliedDate("2026-08-01T00:00:00Z")
                 .coverLetter(app.getCustomCriteriaAnswers())
                 .aiScore(app.getFitnessScore())
                 .aiFeedback(app.getAiReasoning())
@@ -174,8 +277,8 @@ public class JobSeekerController {
         var user = userDetails.getUser();
         var profile = user.getProfile();
         
-        if (updates.getEmail() != null && !updates.getEmail().isEmpty()) user.setEmail(updates.getEmail());
-        if (updates.getName() != null) profile.setFullName(updates.getName());
+        if (updates.getEmail() != null && !updates.getEmail().trim().isEmpty()) user.setEmail(updates.getEmail());
+        if (updates.getName() != null && !updates.getName().trim().isEmpty()) profile.setFullName(updates.getName());
         if (updates.getBio() != null) profile.setBio(updates.getBio());
         if (updates.getHeadline() != null) profile.setHeadline(updates.getHeadline());
         if (updates.getLocation() != null) profile.setLocation(updates.getLocation());
@@ -197,5 +300,22 @@ public class JobSeekerController {
                 .experience(profile.getExperience())
                 .resume(profile.getResumeUri())
                 .build());
+    }
+
+    @GetMapping("/resumes/{filename:.+}")
+    public ResponseEntity<org.springframework.core.io.Resource> getResumeFile(@PathVariable String filename) {
+        try {
+            java.nio.file.Path filePath = java.nio.file.Paths.get("uploads/resumes").resolve(filename).normalize();
+            org.springframework.core.io.Resource resource = new org.springframework.core.io.UrlResource(filePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                        .body(resource);
+            }
+        } catch (Exception e) {
+            System.err.println("Could not read local file: " + e.getMessage());
+        }
+        return ResponseEntity.notFound().build();
     }
 }

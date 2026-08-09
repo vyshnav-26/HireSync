@@ -24,7 +24,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
     
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ToString.Exclude
     private Profile profile;
 }

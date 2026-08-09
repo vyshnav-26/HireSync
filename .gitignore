@@ -1,0 +1,139 @@
+# ==============================================================================
+# HireSync Universal Root .gitignore
+# Single centralized gitignore for the entire project (Backend + Frontend + Root)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Backend Build Outputs & Bytecode
+# ------------------------------------------------------------------------------
+target/
+**/target/
+build/
+**/build/
+dist/
+**/dist/
+out/
+**/out/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ------------------------------------------------------------------------------
+# Frontend Build Outputs & Caches
+# ------------------------------------------------------------------------------
+.next/
+**/.next/
+.turbo/
+**/.turbo/
+.vercel/
+**/.vercel/
+.output/
+**/.output/
+out/
+**/out/
+coverage/
+**/coverage/
+
+# ------------------------------------------------------------------------------
+# Dependencies & Package Managers
+# ------------------------------------------------------------------------------
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ------------------------------------------------------------------------------
+# User Uploads, Resumes & Storage Directories
+# ------------------------------------------------------------------------------
+uploads/
+**/uploads/
+backend/uploads/
+temp/
+**/temp/
+tmp/
+**/tmp/
+*.tmp
+*.temp
+*.pdf
+!**/resources/**/*.pdf
+
+# ------------------------------------------------------------------------------
+# Log Files, Crash Dumps & Diagnostics
+# ------------------------------------------------------------------------------
+*.log
+logs/
+**/logs/
+hs_err_pid*
+**/hs_err_pid*
+replay_pid*
+**/replay_pid*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ------------------------------------------------------------------------------
+# Environment Variables, Secrets & Local Overrides
+# ------------------------------------------------------------------------------
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ------------------------------------------------------------------------------
+# IDE, Editor & OS Specific Files
+# ------------------------------------------------------------------------------
+# IntelliJ IDEA
+.idea/
+**/.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+**/.vscode/
+*.code-workspace
+
+# Eclipse / STS / NetBeans
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+nbproject/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# OS Meta Files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+**/Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ------------------------------------------------------------------------------
+# Sandbox & Temporary Tooling Files
+# ------------------------------------------------------------------------------
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.snowflake/
+.v0-trash/
+HELP.md

@@ -27,20 +27,15 @@ export default function ApplicationsPage() {
     const fetchApplications = async () => {
       setIsLoading(true);
       try {
-        const params = new URLSearchParams();
-        params.set('page', currentPage.toString());
-        params.set('limit', '10');
-
+        const response = await apiGet<Application[]>(`/api/job-seeker/applications`);
+        let apps = Array.isArray(response) ? response : (response as any).data || [];
+        
         if (statusFilter !== 'all') {
-          params.set('status', statusFilter);
+          apps = apps.filter(app => app.status === statusFilter);
         }
-
-        const response = await apiGet<Application[]>(
-          `/api/job-seeker/applications?${params.toString()}`
-        );
-        const apps = Array.isArray(response) ? response : (response as any).data || [];
+        
         setApplications(apps);
-        setTotalPages(1);
+        setTotalPages(Math.ceil(apps.length / 10));
       } catch (error) {
         console.error('Failed to fetch applications:', error);
       } finally {
@@ -85,6 +80,7 @@ export default function ApplicationsPage() {
                     key={option.value}
                     variant={statusFilter === option.value ? 'default' : 'outline'}
                     size="sm"
+                    className="h-auto py-2 px-3 text-xs sm:text-sm font-medium leading-none rounded-sm"
                     onClick={() => {
                       setStatusFilter(option.value);
                       setCurrentPage(1);
@@ -102,7 +98,7 @@ export default function ApplicationsPage() {
             <LoadingSpinner />
           ) : applications.length > 0 ? (
             <div className="space-y-4">
-              {applications.map((app) => (
+              {applications.slice((currentPage - 1) * 10, currentPage * 10).map((app) => (
                 <ApplicationCard key={app.id} application={app} job={app.job} />
               ))}
 

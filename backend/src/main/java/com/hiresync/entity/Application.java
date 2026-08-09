@@ -16,12 +16,12 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "candidate_id", nullable = false)
     @ToString.Exclude
     private User candidate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "job_posting_id", nullable = false)
     @ToString.Exclude
     private JobPosting jobPosting;
@@ -32,13 +32,20 @@ public class Application {
     @Column(nullable = false)
     private ApplicationStatus status;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "TEXT")
     private String customCriteriaAnswers;
 
     private Integer fitnessScore;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "TEXT")
     private String aiReasoning;
+
+    @Builder.Default
+    private Integer currentPhaseIndex = 0;
+
+    @Builder.Default
+    private String phaseStatus = "IN_PROGRESS"; // IN_PROGRESS, PASSED, REJECTED
+
+    @Column(columnDefinition = "TEXT")
+    private String emailLogs;
 }

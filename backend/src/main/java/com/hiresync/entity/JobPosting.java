@@ -32,8 +32,7 @@ public class JobPosting {
     @ToString.Exclude
     private User recruiter;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "TEXT")
     private String customCriteria;
 
     private String company;
@@ -45,10 +44,16 @@ public class JobPosting {
     private String status = "open";
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "TEXT")
     private java.util.List<String> requirements;
 
     private Integer salaryMin;
     private Integer salaryMax;
     private String salaryCurrency;
+
+    @Column(columnDefinition = "TEXT")
+    private String hiringPhases;
+
+    @Column(columnDefinition = "TEXT")
+    private String questionnaire;
 }

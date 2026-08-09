@@ -23,14 +23,19 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request) {
+        com.hiresync.entity.Role userRole = "recruiter".equalsIgnoreCase(request.getUserType()) 
+                ? com.hiresync.entity.Role.RECRUITER 
+                : com.hiresync.entity.Role.JOB_SEEKER;
+                
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(userRole)
                 .build();
         
         Profile profile = Profile.builder()
-                .fullName(request.getFullName())
+                .fullName(request.getName())
+                .company(request.getCompany())
                 .user(user)
                 .build();
         user.setProfile(profile);

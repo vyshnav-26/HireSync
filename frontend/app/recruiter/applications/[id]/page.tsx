@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/common/loading-spinner';
 import { ApplicationReview } from '@/components/recruiter/application-review';
-import { apiGet, apiPatch } from '@/lib/api-client';
+import { apiGet, apiPatch, apiPost } from '@/lib/api-client';
 import { Application, Job, Candidate } from '@/lib/types';
 import { ROUTES } from '@/lib/constants';
 import { MapPin, Briefcase, Mail, ChevronLeft } from 'lucide-react';
@@ -50,7 +50,7 @@ export default function ApplicationReviewPage() {
 
     setIsUpdating(true);
     try {
-      const response = await apiPatch<Application>(
+      const response = await apiPatch<ApplicationDetail>(
         `/api/recruiter/applications/${applicationId}`,
         { status }
       );
@@ -62,12 +62,44 @@ export default function ApplicationReviewPage() {
     }
   };
 
+  const handleAdvancePhase = async () => {
+    if (!application) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await apiPost<ApplicationDetail>(
+        `/api/recruiter/applications/${applicationId}/advance-phase`
+      );
+      setApplication({ ...application, ...response });
+    } catch (error) {
+      console.error('Failed to advance phase:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleRejectPhase = async () => {
+    if (!application) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await apiPost<ApplicationDetail>(
+        `/api/recruiter/applications/${applicationId}/reject-phase`
+      );
+      setApplication({ ...application, ...response });
+    } catch (error) {
+      console.error('Failed to reject phase:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const handleFeedbackSubmit = async (feedback: string, rating: number) => {
     if (!application) return;
 
     setIsUpdating(true);
     try {
-      const response = await apiPatch<Application>(
+      const response = await apiPatch<ApplicationDetail>(
         `/api/recruiter/applications/${applicationId}`,
         { feedback, rating }
       );
@@ -207,9 +239,22 @@ export default function ApplicationReviewPage() {
                   <CardTitle className="text-base">Cover Letter</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground whitespace-pre-wrap">
-                    {application.coverLetter}
-                  </p>
+                  <div className="text-muted-foreground whitespace-pre-wrap">
+                    {(() => {
+                      try {
+                        const parsed = JSON.parse(application.coverLetter);
+                        if (parsed && typeof parsed === 'object') {
+                          if (parsed.text) return parsed.text;
+                          return Object.entries(parsed)
+                            .map(([key, value]) => `${key}:\n${value}`)
+                            .join('\n\n');
+                        }
+                        return application.coverLetter;
+                      } catch (e) {
+                        return application.coverLetter;
+                      }
+                    })()}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -220,6 +265,8 @@ export default function ApplicationReviewPage() {
                 application={application}
                 onStatusChange={handleStatusChange}
                 onFeedbackSubmit={handleFeedbackSubmit}
+                onAdvancePhase={handleAdvancePhase}
+                onRejectPhase={handleRejectPhase}
                 isLoading={isUpdating}
               />
             </div>

@@ -29,6 +29,7 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
 
   const [formData, setFormData] = useState({
     title: job?.title || '',
+    company: job?.company || '',
     description: job?.description || '',
     location: job?.location || '',
     workType: (job?.workType || 'hybrid') as 'remote' | 'on-site' | 'hybrid',
@@ -38,10 +39,95 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
       max: job?.salary?.max || 0,
     },
     status: (job?.status || 'draft') as 'open' | 'closed' | 'draft',
+    hiringPhases: job?.hiringPhases || ['Screening', 'Group Discussion', 'Assessment', 'Technical Interview', 'HR Interview'],
+    questionnaire: job?.questionnaire || [],
   });
 
   const [newRequirement, setNewRequirement] = useState('');
+  const [newQuestion, setNewQuestion] = useState('');
+  const [newCustomPhase, setNewCustomPhase] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
+
+  // Comprehensive Standard Industry Hiring Rounds Library
+  const STANDARD_ROUNDS_LIBRARY = [
+    'Resume Screening',
+    'Online Coding / Aptitude Test',
+    'Group Discussion',
+    'Technical Interview 1 (Fundamentals)',
+    'Technical Interview 2 (Live Coding & Architecture)',
+    'System Design Round',
+    'Managerial / Behavioral Round',
+    'Culture Fit Round',
+    'Executive / Founder Round',
+    'HR & Offer Negotiation',
+    'Background & Reference Check',
+  ];
+
+  const handleAddRoundToPipeline = (round: string) => {
+    if (!formData.hiringPhases.includes(round)) {
+      setFormData(prev => ({
+        ...prev,
+        hiringPhases: [...prev.hiringPhases, round],
+      }));
+    }
+  };
+
+  const handleRemoveRound = (roundToRemove: string) => {
+    if (formData.hiringPhases.length <= 1) return; // Keep at least 1 phase
+    setFormData(prev => ({
+      ...prev,
+      hiringPhases: prev.hiringPhases.filter(r => r !== roundToRemove),
+    }));
+  };
+
+  const handleMoveRoundUp = (index: number) => {
+    if (index <= 0) return;
+    setFormData(prev => {
+      const updated = [...prev.hiringPhases];
+      const temp = updated[index - 1];
+      updated[index - 1] = updated[index];
+      updated[index] = temp;
+      return { ...prev, hiringPhases: updated };
+    });
+  };
+
+  const handleMoveRoundDown = (index: number) => {
+    if (index >= formData.hiringPhases.length - 1) return;
+    setFormData(prev => {
+      const updated = [...prev.hiringPhases];
+      const temp = updated[index + 1];
+      updated[index + 1] = updated[index];
+      updated[index] = temp;
+      return { ...prev, hiringPhases: updated };
+    });
+  };
+
+  const handleAddCustomRound = () => {
+    if (newCustomPhase.trim() && !formData.hiringPhases.includes(newCustomPhase.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        hiringPhases: [...prev.hiringPhases, newCustomPhase.trim()],
+      }));
+      setNewCustomPhase('');
+    }
+  };
+
+  const handleAddQuestion = () => {
+    if (newQuestion.trim() && !formData.questionnaire.includes(newQuestion.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        questionnaire: [...prev.questionnaire, newQuestion.trim()],
+      }));
+      setNewQuestion('');
+    }
+  };
+
+  const handleRemoveQuestion = (qToRemove: string) => {
+    setFormData(prev => ({
+      ...prev,
+      questionnaire: prev.questionnaire.filter(q => q !== qToRemove),
+    }));
+  };
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -76,6 +162,8 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
       formData.description,
       formData.location,
       formData.requirements,
+      formData.salary.min,
+      formData.salary.max
     );
 
     if (!validation.valid) {
@@ -109,18 +197,33 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
             </div>
           )}
 
-          {/* Title */}
-          <div className="space-y-2">
-            <label htmlFor="title" className="text-sm font-medium text-foreground">
-              Job Title
-            </label>
-            <Input
-              id="title"
-              placeholder="e.g., Senior React Developer"
-              value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              disabled={isLoading}
-            />
+          {/* Title & Company */}
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label htmlFor="title" className="text-sm font-medium text-foreground">
+                Job Title
+              </label>
+              <Input
+                id="title"
+                placeholder="e.g., Senior React Developer"
+                value={formData.title}
+                onChange={(e) => handleInputChange('title', e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="company" className="text-sm font-medium text-foreground">
+                Company Name
+              </label>
+              <Input
+                id="company"
+                placeholder="e.g., Acme Inc. (Leave blank to use profile company)"
+                value={formData.company}
+                onChange={(e) => handleInputChange('company', e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
           </div>
 
           {/* Description */}
@@ -183,12 +286,13 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
               <Input
                 id="salaryMin"
                 type="number"
+                min="0"
                 placeholder="100000"
-                value={formData.salary.min}
+                value={formData.salary.min === 0 ? '' : formData.salary.min}
                 onChange={(e) =>
                   setFormData(prev => ({
                     ...prev,
-                    salary: { ...prev.salary, min: parseInt(e.target.value) || 0 },
+                    salary: { ...prev.salary, min: e.target.value === '' ? 0 : Math.max(0, parseInt(e.target.value) || 0) },
                   }))
                 }
                 disabled={isLoading}
@@ -202,12 +306,13 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
               <Input
                 id="salaryMax"
                 type="number"
+                min="0"
                 placeholder="150000"
-                value={formData.salary.max}
+                value={formData.salary.max === 0 ? '' : formData.salary.max}
                 onChange={(e) =>
                   setFormData(prev => ({
                     ...prev,
-                    salary: { ...prev.salary, max: parseInt(e.target.value) || 0 },
+                    salary: { ...prev.salary, max: e.target.value === '' ? 0 : Math.max(0, parseInt(e.target.value) || 0) },
                   }))
                 }
                 disabled={isLoading}
@@ -257,6 +362,191 @@ export function JobForm({ job, onSubmit, isLoading = false }: JobFormProps) {
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Custom Linear Hiring Pipeline Customizer with Reordering */}
+          <div className="space-y-4 pt-4 border-t border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-sm font-bold text-foreground block">
+                  Custom Linear Hiring Pipeline & Order of Rounds
+                </label>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Reorder rounds using ↑ / ↓ buttons to set the exact sequence candidates will flow through linearly.
+                </p>
+              </div>
+              <Badge variant="outline" className="text-xs font-semibold">
+                {formData.hiringPhases.length} Rounds Configured
+              </Badge>
+            </div>
+
+            {/* Active Pipeline Flow with Reordering Controls */}
+            <div className="space-y-2 p-3.5 rounded-sm bg-muted/40 border border-border/80">
+              <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-2">
+                Active Hiring Sequence (Execution Order):
+              </p>
+              
+              <div className="space-y-2">
+                {formData.hiringPhases.map((phase, idx) => (
+                  <div
+                    key={`${phase}-${idx}`}
+                    className="flex items-center justify-between p-2.5 rounded-sm bg-background border border-border text-xs font-semibold shadow-2xs"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="h-5 w-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[11px] font-bold shrink-0">
+                        {idx + 1}
+                      </span>
+                      <span className="truncate font-medium text-foreground text-sm">{phase}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {/* Move Up */}
+                      <button
+                        type="button"
+                        onClick={() => handleMoveRoundUp(idx)}
+                        disabled={idx === 0 || isLoading}
+                        title="Move round earlier"
+                        className="px-2 py-1 rounded-sm border border-border bg-muted/50 hover:bg-muted text-foreground disabled:opacity-30 cursor-pointer text-xs font-bold"
+                      >
+                        ↑
+                      </button>
+
+                      {/* Move Down */}
+                      <button
+                        type="button"
+                        onClick={() => handleMoveRoundDown(idx)}
+                        disabled={idx === formData.hiringPhases.length - 1 || isLoading}
+                        title="Move round later"
+                        className="px-2 py-1 rounded-sm border border-border bg-muted/50 hover:bg-muted text-foreground disabled:opacity-30 cursor-pointer text-xs font-bold"
+                      >
+                        ↓
+                      </button>
+
+                      {/* Remove Round */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveRound(phase)}
+                        disabled={formData.hiringPhases.length <= 1 || isLoading}
+                        title="Remove round from pipeline"
+                        className="px-2 py-1 rounded-sm border border-rose-200 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 disabled:opacity-30 cursor-pointer text-xs font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Add from Standard Rounds Library */}
+            <div className="space-y-2 pt-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
+                Add Standard Rounds from Library:
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {STANDARD_ROUNDS_LIBRARY.map((round) => {
+                  const isAdded = formData.hiringPhases.includes(round);
+                  return (
+                    <button
+                      key={round}
+                      type="button"
+                      onClick={() => handleAddRoundToPipeline(round)}
+                      disabled={isAdded || isLoading}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${
+                        isAdded
+                          ? 'bg-indigo-50/80 text-indigo-700 border-indigo-200 opacity-60 dark:bg-indigo-950/40 dark:text-indigo-400 cursor-default'
+                          : 'bg-background hover:bg-muted border-border text-foreground cursor-pointer shadow-2xs hover:border-indigo-400'
+                      }`}
+                    >
+                      <span>{isAdded ? '✓ Added' : '+ Add'}</span>
+                      <span>{round}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Custom Round Input */}
+            <div className="space-y-2 pt-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
+                Add Custom Proprietary Round:
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="e.g., Take-home Assignment Review or Founder 1-on-1"
+                  value={newCustomPhase}
+                  onChange={(e) => setNewCustomPhase(e.target.value)}
+                  disabled={isLoading}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddCustomRound();
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleAddCustomRound}
+                  disabled={isLoading || !newCustomPhase.trim()}
+                  className="rounded-sm font-semibold whitespace-nowrap"
+                >
+                  + Add Custom Round
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Optional Questionnaire Builder */}
+          <div className="space-y-3 pt-4 border-t border-border">
+            <div>
+              <label className="text-sm font-semibold text-foreground block">
+                Job Screening Questionnaire (Optional)
+              </label>
+              <p className="text-xs text-muted-foreground">
+                Add custom questions candidates must answer when applying. AI factors answers into candidate scores.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="e.g., How many years of experience do you have with PostgreSQL?"
+                value={newQuestion}
+                onChange={(e) => setNewQuestion(e.target.value)}
+                disabled={isLoading}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddQuestion();
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleAddQuestion}
+                disabled={isLoading || !newQuestion.trim()}
+              >
+                Add Question
+              </Button>
+            </div>
+
+            {formData.questionnaire.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {formData.questionnaire.map((q, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2.5 rounded-sm bg-background border border-border text-xs text-foreground">
+                    <span><strong>Q{idx + 1}:</strong> {q}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveQuestion(q)}
+                      className="text-rose-500 hover:text-rose-700 p-1"
+                      disabled={isLoading}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

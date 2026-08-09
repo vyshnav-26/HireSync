@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/lib/constants';
 import { ThemeToggle } from '@/components/theme-toggle';
 
+import { Logo } from '@/components/common/logo';
+
 export function Header() {
   const { isAuthenticated, user, logout } = useAuth();
   const router = useRouter();
@@ -17,17 +19,10 @@ export function Header() {
   };
 
   return (
-    <header className="border-b border-border bg-card">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link href={ROUTES.HOME} className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#4F46E5]">
-            <span className="text-sm font-bold text-white">AI</span>
-          </div>
-          <span className="hidden font-semibold text-foreground sm:inline">
-            AI Recruiter
-          </span>
-        </Link>
+    <header className="border-b border-border bg-card shadow-2xs">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+        {/* Modern HireSync AI Logo */}
+        <Logo size="md" />
 
         {/* Navigation */}
         <nav className="flex items-center gap-4">

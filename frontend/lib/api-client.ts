@@ -30,9 +30,6 @@ export const apiClient = async <T>(
   const timeoutId = setTimeout(() => controller.abort(), timeout);
   
   try {
-    // Simulate network delay
-    await delay(API_MOCK_DELAY);
-    
     const response = await fetch(url, {
       ...fetchOptions,
       headers,
@@ -48,7 +45,12 @@ export const apiClient = async <T>(
       throw new Error(error.message || `HTTP ${response.status}`);
     }
     
-    return await response.json();
+    if (response.status === 204) {
+      return {} as T;
+    }
+    
+    const text = await response.text();
+    return text ? JSON.parse(text) : ({} as T);
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof TypeError && error.message === 'Failed to fetch') {

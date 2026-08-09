@@ -1,10 +1,27 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ROUTES } from '@/lib/constants';
 import { Briefcase, Users, Zap, TrendingUp } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function Home() {
+  const { isAuthenticated, user, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user) {
+      if (user.userType === 'candidate') {
+        router.push(ROUTES.CANDIDATE_DASHBOARD);
+      } else if (user.userType === 'recruiter') {
+        router.push(ROUTES.RECRUITER_DASHBOARD);
+      }
+    }
+  }, [isLoading, isAuthenticated, user, router]);
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -44,7 +61,7 @@ export default function Home() {
                   <p className="font-mono bg-muted p-2 rounded text-sm">password</p>
                 </div>
                 <Link href={ROUTES.LOGIN}>
-                  <Button variant="outline" className="w-full">Try as Candidate</Button>
+                  <Button variant="outline">Try as Candidate</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -57,7 +74,7 @@ export default function Home() {
                   <p className="font-mono bg-muted p-2 rounded text-sm">password</p>
                 </div>
                 <Link href={ROUTES.LOGIN}>
-                  <Button variant="outline" className="w-full">Try as Recruiter</Button>
+                  <Button variant="outline">Try as Recruiter</Button>
                 </Link>
               </CardContent>
             </Card>

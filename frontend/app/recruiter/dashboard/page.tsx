@@ -172,7 +172,7 @@ export default function RecruiterDashboard() {
                     <JobListItem key={job.id} job={job} />
                   ))}
                   <Link href={ROUTES.RECRUITER_JOBS}>
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline">
                       View All Jobs
                     </Button>
                   </Link>

@@ -30,10 +30,10 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**", "/uploads/**", "/api/files/**", "/api/job-seeker/resumes/**").permitAll()
                 .requestMatchers("/error").permitAll()
-                .requestMatchers("/api/job-seeker/**").hasAuthority("JOB_SEEKER")
-                .requestMatchers("/api/recruiter/**").hasAuthority("RECRUITER")
+                .requestMatchers("/api/job-seeker/**").hasAnyAuthority("JOB_SEEKER", "ROLE_JOB_SEEKER", "CANDIDATE")
+                .requestMatchers("/api/recruiter/**").hasAnyAuthority("RECRUITER", "ROLE_RECRUITER")
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

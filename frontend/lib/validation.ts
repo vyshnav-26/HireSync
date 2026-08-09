@@ -104,6 +104,8 @@ export const validateJobForm = (
   description: string,
   location: string,
   requirements: string[],
+  salaryMin?: number,
+  salaryMax?: number,
 ): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
   
@@ -121,6 +123,12 @@ export const validateJobForm = (
   
   if (!validateRequirements(requirements)) {
     errors.push('At least one requirement is required');
+  }
+
+  if (salaryMin !== undefined && salaryMax !== undefined) {
+    if (salaryMax < salaryMin) {
+      errors.push('Maximum salary cannot be less than minimum salary');
+    }
   }
   
   return {

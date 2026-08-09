@@ -1,5 +1,6 @@
 package com.hiresync.config;
 
+import com.hiresync.entity.Role;
 import com.hiresync.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +16,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        String roleName = user.getRole().name();
+        return List.of(
+            new SimpleGrantedAuthority(roleName),
+            new SimpleGrantedAuthority("ROLE_" + roleName),
+            new SimpleGrantedAuthority(user.getRole() == Role.JOB_SEEKER ? "CANDIDATE" : "RECRUITER")
+        );
     }
 
     @Override

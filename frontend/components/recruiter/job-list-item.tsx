@@ -25,7 +25,7 @@ export function JobListItem({ job, onEdit, onDelete }: JobListItemProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Link href={`/recruiter/jobs/${job.id}`}>
-                <h3 className="text-lg font-semibold text-foreground hover:text-[#4F46E5] cursor-pointer">
+                <h3 className="text-lg font-semibold text-foreground hover:text-[#4F46E5] cursor-pointer capitalize">
                   {job.title}
                 </h3>
               </Link>
@@ -33,7 +33,7 @@ export function JobListItem({ job, onEdit, onDelete }: JobListItemProps) {
                 {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">{job.company}</p>
+            <p className="text-sm text-muted-foreground capitalize">{job.company}</p>
           </div>
 
           <div className="flex gap-2">
@@ -60,7 +60,7 @@ export function JobListItem({ job, onEdit, onDelete }: JobListItemProps) {
         </div>
 
         <div className="flex flex-wrap gap-4 mb-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground capitalize">
             <MapPin className="h-4 w-4" />
             {job.location}
           </div>
@@ -75,8 +75,8 @@ export function JobListItem({ job, onEdit, onDelete }: JobListItemProps) {
         </p>
 
         <Link href={`/recruiter/jobs/${job.id}`}>
-          <Button variant="outline" size="sm" className="w-full">
-            View & Manage
+          <Button variant="outline" size="sm">
+            View Details
           </Button>
         </Link>
       </CardContent>

@@ -30,8 +30,12 @@ export function LoginForm() {
     }
 
     try {
-      await login(email, password);
-      router.push(ROUTES.CANDIDATE_DASHBOARD);
+      const loggedInUser = await login(email, password);
+      if (loggedInUser && loggedInUser.userType === 'recruiter') {
+        router.push(ROUTES.RECRUITER_DASHBOARD);
+      } else {
+        router.push(ROUTES.CANDIDATE_DASHBOARD);
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed';
       setError(message);
