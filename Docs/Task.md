@@ -61,17 +61,17 @@
 - [x] Add global exception handling (`@ControllerAdvice`) and standardized API response envelope (`ApiResponse<T>`)
 
 #### Milestone 1.4: Frontend React + Vite Scaffold (`/frontend`)
-- [ ] **[Issue #3]** Initialize React 18+ with TypeScript using Vite under `/frontend`
-- [ ] **[Issue #3]** Set up and configure Tailwind CSS and theme tokens
-- [ ] **[Issue #3]** Establish frontend directory architecture:
+- [x] **[Issue #3]** Initialize React 18+ with TypeScript using Vite under `/frontend`
+- [x] **[Issue #3]** Set up and configure Tailwind CSS and theme tokens
+- [x] **[Issue #3]** Establish frontend directory architecture:
   - `src/components` (reusable UI atoms/molecules: buttons, inputs, modals, cards)
   - `src/pages` (route views: Home, Login, Register, Dashboard, Jobs)
   - `src/services` (Axios API client with interceptors for JWT injection)
   - `src/hooks` (custom business and state hooks)
   - `src/types` (TypeScript domain models and API contracts)
   - `src/store` (global client-side state management)
-- [ ] Set up React Router DOM with public vs. protected route guards
-- [ ] Integrate Lucide React icon library
+- [x] Set up React Router DOM with public vs. protected route guards
+- [x] Integrate Lucide React icon library
 
 ---
 
@@ -206,7 +206,7 @@
 | **INF-01** | Docker Compose Setup (Postgres, Redis, MinIO) | Issue #4 | Phase 1 | `BACKLOG` |
 | **INF-02** | GitHub Actions CI Workflows | Issue #5 | Phase 1 | `BACKLOG` |
 | **BE-01** | Spring Boot Project Scaffold & Configs | Issue #2 | Phase 1 | `COMPLETED` |
-| **FE-01** | React + Vite + Tailwind Scaffold | Issue #3 | Phase 1 | `BACKLOG` |
+| **FE-01** | React + Vite + Tailwind Scaffold | Issue #3 | Phase 1 | `COMPLETED` |
 | **BE-02** | Auth & JWT Security (RBAC) | Milestone 2.1 | Phase 2 | `BACKLOG` |
 | **BE-03** | Job Requisition CRUD APIs | Milestone 2.2 | Phase 2 | `BACKLOG` |
 | **FE-02** | Public Job Portal & Detail Pages | Milestone 2.2 | Phase 2 | `BACKLOG` |
