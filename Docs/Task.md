@@ -79,19 +79,22 @@
 > **Objective:** Deliver functional recruitment workflows—job requisition, candidate applications, document ingestion, Gemini-powered resume screening, and recruiter Kanban pipeline management.
 
 #### Milestone 2.1: Authentication & Role-Based Access Control (RBAC)
-- [ ] Role hierarchy: `ROLE_ADMIN`, `ROLE_RECRUITER`, `ROLE_CANDIDATE`
-- [ ] Candidate registration and login (email/password with BCrypt hashing)
-- [ ] Recruiter / Admin invitation flow and authenticated management
-- [ ] Refresh token rotation with Redis-backed revocation list
-- [ ] Frontend login/registration views and authenticated session persistence
+- [ ] **[Issue #14]** Define `User` entity, `Role` enum (`ROLE_ADMIN`, `ROLE_RECRUITER`, `ROLE_CANDIDATE`), and `UserRepository`
+- [ ] **[Issue #15]** Implement candidate self-registration API endpoint (`POST /api/v1/auth/register`) with BCrypt hashing
+- [ ] **[Issue #16]** Implement login API endpoint (`POST /api/v1/auth/login`) and `JwtService` token generation
+- [ ] **[Issue #17]** Implement refresh token rotation and Redis-backed token revocation blocklist (`POST /api/v1/auth/refresh`, `POST /api/v1/auth/logout`)
+- [ ] **[Issue #18]** Wire `JwtAuthenticationFilter` and Spring Security filter chain with RBAC rules
+- [ ] **[Issue #19]** Build frontend Login view with credential validation and error states
+- [ ] **[Issue #20]** Build frontend Registration view with validation rules
+- [ ] **[Issue #21]** Integrate Zustand auth store, persistent sessions, silent refresh, and role-based route guards
 
 #### Milestone 2.2: Job Management & Public Career Portal
-- [ ] Job requisition entity & schema (Title, Department, Location, Type, Description, Requirements, Salary Range, Status)
-- [ ] Job lifecycle states: `DRAFT`, `PUBLISHED`, `CLOSED`, `ARCHIVED`
-- [ ] Recruiter CRUD endpoints for managing job postings
-- [ ] Public-facing career portal:
-  - [ ] Search and filter jobs by keyword, department, and employment type
-  - [ ] Responsive job detail view with application CTA
+- [ ] **[Issue #22]** Define `Job` entity, `JobStatus` enum (`DRAFT`, `PUBLISHED`, `CLOSED`, `ARCHIVED`), and `JobRepository`
+- [ ] **[Issue #23]** Implement recruiter Job CRUD REST endpoints and status transition validation
+- [ ] **[Issue #24]** Implement unauthenticated public job search and filter API (`GET /api/v1/public/jobs`)
+- [ ] **[Issue #25]** Build public Career Portal page with search, multi-filter dropdowns, and pagination
+- [ ] **[Issue #26]** Build public Job Detail view with role-aware application CTA
+- [ ] **[Issue #27]** Build recruiter Job Management dashboard with job creation modal and status controls
 
 #### Milestone 2.3: Candidate Portal & Multi-Part Application Ingestion
 - [ ] Candidate application entity (Candidate Profile, Job ID, Status, Cover Note, Resume S3 Reference)
@@ -207,12 +210,13 @@
 | **INF-02** | GitHub Actions CI Workflows | Issue #5 | Phase 1 | `COMPLETED` |
 | **BE-01** | Spring Boot Project Scaffold & Configs | Issue #2 | Phase 1 | `COMPLETED` |
 | **FE-01** | React + Vite + Tailwind Scaffold | Issue #3 | Phase 1 | `COMPLETED` |
-| **BE-02** | Auth & JWT Security (RBAC) | Milestone 2.1 | Phase 2 | `BACKLOG` |
-| **BE-03** | Job Requisition CRUD APIs | Milestone 2.2 | Phase 2 | `BACKLOG` |
-| **FE-02** | Public Job Portal & Detail Pages | Milestone 2.2 | Phase 2 | `BACKLOG` |
+| **BE-02** | Auth & JWT Security (RBAC) | Issues #14, #15, #16, #17, #18 | Milestone 2.1 | `OPEN` |
+| **FE-02** | Frontend Auth Views & Session Handling | Issues #19, #20, #21 | Milestone 2.1 | `OPEN` |
+| **BE-03** | Job Requisition CRUD & Search APIs | Issues #22, #23, #24 | Milestone 2.2 | `OPEN` |
+| **FE-03** | Career Portal, Detail & Recruiter Job Views | Issues #25, #26, #27 | Milestone 2.2 | `OPEN` |
 | **BE-04** | MinIO Document Storage Integration | Milestone 2.3 | Phase 2 | `BACKLOG` |
 | **AI-01** | Gemini API Resume Parsing & Fit Scoring | Milestone 2.4 | Phase 2 | `BACKLOG` |
-| **FE-03** | Recruiter Pipeline & Kanban Board UI | Milestone 2.5 | Phase 2 | `BACKLOG` |
+| **FE-04** | Recruiter Pipeline & Kanban Board UI | Milestone 2.5 | Phase 2 | `BACKLOG` |
 | **AI-02** | Custom Model Benchmark & Transition | Milestone 3.1 | Phase 3 | `BACKLOG` |
 | **OPS-01** | Calendar Integration & Scheduling | Milestone 3.2 | Phase 3 | `BACKLOG` |
 | **OPS-02** | Hiring Metrics & Analytics Dashboard | Milestone 3.3 | Phase 3 | `BACKLOG` |
