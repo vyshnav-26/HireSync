@@ -33,12 +33,12 @@
 - [ ] **[Issue #7]** Create comprehensive `README.md` with architecture diagrams, prerequisites, quick-start guide, and build badges
 
 #### Milestone 1.2: Containerized Local Environment & CI/CD
-- [ ] **[Issue #4]** Create root `docker-compose.yml` orchestrating:
-  - [ ] PostgreSQL 16 with persistent named volumes and health check
-  - [ ] Redis 7 (Alpine) with persistent storage and ping health check
-  - [ ] MinIO with default buckets (`resumes`, `attachments`) and access console
-  - [ ] Spring Boot backend service container definition
-- [ ] **[Issue #4]** Create `.env.example` with documented environment variable keys for all services
+- [x] **[Issue #4]** Create root `docker-compose.yml` orchestrating:
+  - [x] PostgreSQL 16 with persistent named volumes and health check
+  - [x] Redis 7 (Alpine) with persistent storage and ping health check
+  - [x] MinIO with default buckets (`resumes`, `attachments`) and access console
+  - [x] Spring Boot backend service container definition
+- [x] **[Issue #4]** Create `.env.example` with documented environment variable keys for all services
 - [ ] **[Issue #5]** Configure GitHub Actions CI (`.github/workflows/ci.yml`):
   - [ ] Backend verification job (JDK 21, `mvn clean verify`)
   - [ ] Frontend verification job (Node 20, `npm ci && npm run build`)
@@ -203,7 +203,7 @@
 | **DOC-01** | Roadmap & Task Tracking (`Docs/Task.md`) | Issue #1 | Phase 1 | `IN_PROGRESS` |
 | **DOC-02** | Contribution Guidelines (`CONTRIBUTING.md`) | Issue #6 | Phase 1 | `BACKLOG` |
 | **DOC-03** | Comprehensive Documentation (`README.md`) | Issue #7 | Phase 1 | `BACKLOG` |
-| **INF-01** | Docker Compose Setup (Postgres, Redis, MinIO) | Issue #4 | Phase 1 | `BACKLOG` |
+| **INF-01** | Docker Compose Setup (Postgres, Redis, MinIO) | Issue #4 | Phase 1 | `COMPLETED` |
 | **INF-02** | GitHub Actions CI Workflows | Issue #5 | Phase 1 | `BACKLOG` |
 | **BE-01** | Spring Boot Project Scaffold & Configs | Issue #2 | Phase 1 | `COMPLETED` |
 | **FE-01** | React + Vite + Tailwind Scaffold | Issue #3 | Phase 1 | `COMPLETED` |
