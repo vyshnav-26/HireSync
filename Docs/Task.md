@@ -45,20 +45,20 @@
   - [ ] Branch protection rules and status badge setup
 
 #### Milestone 1.3: Backend Spring Boot Scaffold (`/backend`)
-- [ ] **[Issue #2]** Initialize Spring Boot project (Java 21, Maven) under `/backend`
-- [ ] **[Issue #2]** Implement clean layered package structure:
+- [x] **[Issue #2]** Initialize Spring Boot project (Java 21, Maven) under `/backend`
+- [x] **[Issue #2]** Implement clean layered package structure:
   - `com.hiresync.controller`
   - `com.hiresync.service`
   - `com.hiresync.repository`
   - `com.hiresync.model`
   - `com.hiresync.config`
   - `com.hiresync.security`
-- [ ] Configure `application.yml` and `application-dev.yml` targeting Docker Compose services
-- [ ] Configure Spring Data JPA / Hibernate connection pooling with PostgreSQL
-- [ ] Configure Spring Data Redis connection and cache manager
-- [ ] Configure MinIO / S3 SDK client bean with credentials from environment
-- [ ] Establish base Spring Security configuration (JWT token generation, validation, and filter chain)
-- [ ] Add global exception handling (`@ControllerAdvice`) and standardized API response envelope (`ApiResponse<T>`)
+- [x] Configure `application.yml` and `application-dev.yml` targeting Docker Compose services
+- [x] Configure Spring Data JPA / Hibernate connection pooling with PostgreSQL
+- [x] Configure Spring Data Redis connection and cache manager
+- [x] Configure MinIO / S3 SDK client bean with credentials from environment
+- [x] Establish base Spring Security configuration (JWT token generation, validation, and filter chain)
+- [x] Add global exception handling (`@ControllerAdvice`) and standardized API response envelope (`ApiResponse<T>`)
 
 #### Milestone 1.4: Frontend React + Vite Scaffold (`/frontend`)
 - [ ] **[Issue #3]** Initialize React 18+ with TypeScript using Vite under `/frontend`
@@ -205,7 +205,7 @@
 | **DOC-03** | Comprehensive Documentation (`README.md`) | Issue #7 | Phase 1 | `BACKLOG` |
 | **INF-01** | Docker Compose Setup (Postgres, Redis, MinIO) | Issue #4 | Phase 1 | `BACKLOG` |
 | **INF-02** | GitHub Actions CI Workflows | Issue #5 | Phase 1 | `BACKLOG` |
-| **BE-01** | Spring Boot Project Scaffold & Configs | Issue #2 | Phase 1 | `BACKLOG` |
+| **BE-01** | Spring Boot Project Scaffold & Configs | Issue #2 | Phase 1 | `COMPLETED` |
 | **FE-01** | React + Vite + Tailwind Scaffold | Issue #3 | Phase 1 | `BACKLOG` |
 | **BE-02** | Auth & JWT Security (RBAC) | Milestone 2.1 | Phase 2 | `BACKLOG` |
 | **BE-03** | Job Requisition CRUD APIs | Milestone 2.2 | Phase 2 | `BACKLOG` |
