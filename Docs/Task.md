@@ -39,10 +39,10 @@
   - [x] MinIO with default buckets (`resumes`, `attachments`) and access console
   - [x] Spring Boot backend service container definition
 - [x] **[Issue #4]** Create `.env.example` with documented environment variable keys for all services
-- [ ] **[Issue #5]** Configure GitHub Actions CI (`.github/workflows/ci.yml`):
-  - [ ] Backend verification job (JDK 21, `mvn clean verify`)
-  - [ ] Frontend verification job (Node 20, `npm ci && npm run build`)
-  - [ ] Branch protection rules and status badge setup
+- [x] **[Issue #5]** Configure GitHub Actions CI (`.github/workflows/ci.yml`):
+  - [x] Backend verification job (JDK 21, `mvn clean verify`)
+  - [x] Frontend verification job (Node 20, `npm ci && npm run build`)
+  - [x] Branch protection rules and status badge setup
 
 #### Milestone 1.3: Backend Spring Boot Scaffold (`/backend`)
 - [x] **[Issue #2]** Initialize Spring Boot project (Java 21, Maven) under `/backend`
@@ -204,7 +204,7 @@
 | **DOC-02** | Contribution Guidelines (`CONTRIBUTING.md`) | Issue #6 | Phase 1 | `BACKLOG` |
 | **DOC-03** | Comprehensive Documentation (`README.md`) | Issue #7 | Phase 1 | `BACKLOG` |
 | **INF-01** | Docker Compose Setup (Postgres, Redis, MinIO) | Issue #4 | Phase 1 | `COMPLETED` |
-| **INF-02** | GitHub Actions CI Workflows | Issue #5 | Phase 1 | `BACKLOG` |
+| **INF-02** | GitHub Actions CI Workflows | Issue #5 | Phase 1 | `COMPLETED` |
 | **BE-01** | Spring Boot Project Scaffold & Configs | Issue #2 | Phase 1 | `COMPLETED` |
 | **FE-01** | React + Vite + Tailwind Scaffold | Issue #3 | Phase 1 | `COMPLETED` |
 | **BE-02** | Auth & JWT Security (RBAC) | Milestone 2.1 | Phase 2 | `BACKLOG` |
