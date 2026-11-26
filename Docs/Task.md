@@ -29,8 +29,8 @@
 
 #### Milestone 1.1: Project Setup & Repository Standards
 - [x] **[Issue #1]** Initialize `Docs/Task.md` with complete roadmap, milestones, and user stories
-- [ ] **[Issue #6]** Create `CONTRIBUTING.md` outlining branching strategy (`feature/*`, `bugfix/*`, `hotfix/*`), Conventional Commits, code standards, and PR templates
-- [ ] **[Issue #7]** Create comprehensive `README.md` with architecture diagrams, prerequisites, quick-start guide, and build badges
+- [x] **[Issue #6]** Create `CONTRIBUTING.md` outlining branching strategy (`feature/*`, `bugfix/*`, `hotfix/*`), Conventional Commits, code standards, and PR templates
+- [x] **[Issue #7]** Create comprehensive `README.md` with architecture diagrams, prerequisites, quick-start guide, and build badges
 
 #### Milestone 1.2: Containerized Local Environment & CI/CD
 - [x] **[Issue #4]** Create root `docker-compose.yml` orchestrating:
@@ -200,9 +200,9 @@
 
 | Task ID | Item | Owner / Issue | Target Phase | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **DOC-01** | Roadmap & Task Tracking (`Docs/Task.md`) | Issue #1 | Phase 1 | `IN_PROGRESS` |
-| **DOC-02** | Contribution Guidelines (`CONTRIBUTING.md`) | Issue #6 | Phase 1 | `BACKLOG` |
-| **DOC-03** | Comprehensive Documentation (`README.md`) | Issue #7 | Phase 1 | `BACKLOG` |
+| **DOC-01** | Roadmap & Task Tracking (`Docs/Task.md`) | Issue #1 | Phase 1 | `COMPLETED` |
+| **DOC-02** | Contribution Guidelines (`CONTRIBUTING.md`) | Issue #6 | Phase 1 | `COMPLETED` |
+| **DOC-03** | Comprehensive Documentation (`README.md`) | Issue #7 | Phase 1 | `COMPLETED` |
 | **INF-01** | Docker Compose Setup (Postgres, Redis, MinIO) | Issue #4 | Phase 1 | `COMPLETED` |
 | **INF-02** | GitHub Actions CI Workflows | Issue #5 | Phase 1 | `COMPLETED` |
 | **BE-01** | Spring Boot Project Scaffold & Configs | Issue #2 | Phase 1 | `COMPLETED` |
